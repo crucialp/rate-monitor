@@ -25,6 +25,11 @@ KST = ZoneInfo("Asia/Seoul")
 
 START_DATE = date(2000, 1, 1)
 RECENT_DAYS = 21
+# ECOS 는 3분에 300회를 넘기면 키를 30분 막는다. 전체 백필은 10년 단위로 크게 받고(계열당 3회),
+# 호출 사이에 간격을 둔다.
+WINDOW_YEARS = 10
+MAX_ROWS = 10000
+CALL_GAP = 0.7
 
 # (csv 열 이름, 통계표, 항목코드, 표시 이름)
 # 항목코드는 ECOS StatisticItemList 응답으로 확인(2026-10-21).
@@ -58,7 +63,7 @@ def load_key() -> str:
     if not key:
         env = ROOT / ".env"
         if env.exists():
-            for line in env.read_text(encoding="utf-8").splitlines():
+            for line in env.read_text(encoding="utf-8-sig").splitlines():
                 if line.strip().startswith("ECOS_API_KEY="):
                     key = line.split("=", 1)[1].strip().strip('"').strip("'")
     if not key:
@@ -82,6 +87,8 @@ def ecos(key: str, stat: str, item: str, start: str, end: str, rows: int) -> lis
             if result.get("CODE") == "INFO-200":  # 해당 기간 데이터 없음
                 return []
             last_err = RuntimeError(f"{result.get('CODE')} {result.get('MESSAGE')}")
+            if str(result.get("CODE", "")).startswith(("ERROR-602", "INFO-100")):
+                break  # 호출 제한·잘못된 키는 다시 불러도 소용없고 제한만 길어진다
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             last_err = e
         time.sleep(1.5 * (attempt + 1))
@@ -140,8 +147,8 @@ def main() -> None:
         sys.exit("sample 키로는 전체 백필을 할 수 없습니다(요청당 10행 제한).")
     if full:
         table = {}
-        windows = [(date(y, 1, 1), min(date(y, 12, 31), today))
-                   for y in range(START_DATE.year, today.year + 1)]
+        windows = [(date(y, 1, 1), min(date(y + WINDOW_YEARS - 1, 12, 31), today))
+                   for y in range(START_DATE.year, today.year + 1, WINDOW_YEARS)]
     else:
         last = max(table)
         since = datetime.strptime(last, "%Y%m%d").date() - timedelta(days=RECENT_DAYS)
@@ -151,14 +158,14 @@ def main() -> None:
     for col, stat, item, name in SERIES:
         for a, b in windows:
             rows = ecos(key, stat, item, a.strftime("%Y%m%d"), b.strftime("%Y%m%d"),
-                        10 if sample else 1000)
+                        10 if sample else MAX_ROWS)
             for r in rows:
                 v = (r.get("DATA_VALUE") or "").strip()
                 if v in ("", "-"):
                     continue
                 table.setdefault(r["TIME"], {})[col] = f"{float(v):g}"
                 fetched += 1
-            time.sleep(0.12)
+            time.sleep(CALL_GAP)
         print(f"{name}: ok", flush=True)
 
     last_date = write_csv(table)
