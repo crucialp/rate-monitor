@@ -53,7 +53,8 @@ MARKET_COLS = [c for c in COLS if c != "base"]
 
 
 def load_key() -> str:
-    key = os.environ.get("ECOS_API_KEY", "").strip()
+    # Secret 에 붙여넣을 때 섞여 들어오는 공백·따옴표는 떼어낸다.
+    key = os.environ.get("ECOS_API_KEY", "").strip().strip('"').strip("'").strip()
     if not key:
         env = ROOT / ".env"
         if env.exists():
