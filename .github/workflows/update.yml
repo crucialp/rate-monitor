@@ -42,7 +42,9 @@ jobs:
       - name: 금리 수집 (ECOS)
         continue-on-error: true
         env:
-          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY || vars.ECOS_API_KEY }}
+          # 키 값은 남기지 않고 어디에 등록돼 있는지만 진단용으로 넘긴다.
+          ECOS_KEY_SOURCES: "secret=${{ secrets.ECOS_API_KEY != '' }}, variable=${{ vars.ECOS_API_KEY != '' }}"
         run: python scripts/fetch_rates.py ${{ inputs.full && '--full' || '' }}
 
       - name: 뉴스 수집 (RSS)

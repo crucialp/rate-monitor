@@ -62,7 +62,9 @@ def load_key() -> str:
                 if line.strip().startswith("ECOS_API_KEY="):
                     key = line.split("=", 1)[1].strip().strip('"').strip("'")
     if not key:
-        sys.exit("ECOS_API_KEY 가 없습니다. 환경변수나 rate-monitor/.env 에 넣어주세요.")
+        where = os.environ.get("ECOS_KEY_SOURCES")
+        sys.exit("ECOS_API_KEY 가 없습니다. 환경변수나 rate-monitor/.env 에 넣어주세요."
+                 + (f" (등록 상태: {where})" if where else ""))
     return key
 
 
