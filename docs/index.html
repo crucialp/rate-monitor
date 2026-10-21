@@ -610,6 +610,13 @@ const R = {
   hover: null,
 };
 for (const k of Object.keys(R.slot)) if (!BY_KEY[k] || R.slot[k] >= SLOTS) delete R.slot[k];
+// 공유 링크로 특정 화면을 바로 열 수 있게 한다. 예: ?p=ALL&u=Y (전체 기간 연평균)
+(() => {
+  const qs = new URLSearchParams(location.search);
+  const p = qs.get("p"), u = qs.get("u");
+  if (p === "ALL" || PRESET_MONTHS[p]) R.preset = p;
+  if (["auto", "D", "M", "Y"].includes(u)) R.unit = u;
+})();
 
 const iso = s => `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`;
 const compact = s => s.replaceAll("-", "");
