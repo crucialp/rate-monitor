@@ -10,6 +10,7 @@ import email.utils
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 import urllib.parse
@@ -198,4 +199,13 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if e.code not in (0, None) and os.environ.get("GITHUB_ACTIONS"):
+            print(f"::error title=뉴스 수집 실패::{e.code}", flush=True)
+        raise
+    except Exception as e:
+        if os.environ.get("GITHUB_ACTIONS"):
+            print(f"::error title=뉴스 수집 실패::{type(e).__name__}: {e}", flush=True)
+        raise

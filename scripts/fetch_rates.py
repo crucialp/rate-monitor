@@ -165,5 +165,19 @@ def main() -> None:
     print(f"{'전체' if full else '증분'} 수집 {fetched}건, 마지막 영업일 {last_date}")
 
 
+def report(msg: str) -> None:
+    # Actions 에서는 오류를 주석(annotation)으로 남겨 로그인 없이도 원인을 볼 수 있게 한다.
+    if os.environ.get("GITHUB_ACTIONS"):
+        print(f"::error title=금리 수집 실패::{msg}", flush=True)
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if e.code not in (0, None):
+            report(str(e.code))
+        raise
+    except Exception as e:
+        report(f"{type(e).__name__}: {e}")
+        raise
