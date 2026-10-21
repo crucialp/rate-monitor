@@ -1250,7 +1250,13 @@ async function boot() {
   buildChips();
   await loadMeta();
   const results = await Promise.allSettled([loadRates(), loadNews()]);
-  if (results[0].status === "rejected") { $("caption").textContent = "금리 자료를 불러오지 못했습니다. 잠시 후 새로고침해 주세요."; }
+  if (results[0].status === "rejected") {
+    const msg = document.createElement("p");
+    msg.className = "list-empty";
+    msg.textContent = "금리 자료가 아직 없습니다. 자동 수집이 처음 성공하면 여기에 그래프가 나옵니다.";
+    chartEl.appendChild(msg);
+    $("caption").textContent = "";
+  }
   route();
   setInterval(refresh, 10 * 60 * 1000);
 }
