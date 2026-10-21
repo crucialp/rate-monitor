@@ -105,7 +105,11 @@ button { cursor: pointer; }
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-.fresh { margin-left: auto; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.fresh-wrap { margin-left: auto; display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.fresh { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.btn.small { padding: 3px 10px; font-size: 12.5px; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn:disabled:hover { background: var(--surface); }
 
 main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 48px; }
 .page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; min-width: 0; }
@@ -383,7 +387,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 @media (max-width: 600px) {
   main { padding-top: 16px; }
   .topbar-inner { gap: 0 14px; }
-  .fresh { width: 100%; margin: 0 0 8px; }
+  .fresh-wrap { width: 100%; margin: 0 0 8px; justify-content: space-between; }
   .group { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .chip .nm { font-size: 13px; }
   .group-name { padding-top: 0; }
@@ -404,7 +408,10 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
       <a href="#rates" role="tab" id="tab-rates" aria-controls="page-rates" aria-selected="true">금리 추이</a>
       <a href="#news" role="tab" id="tab-news" aria-controls="page-news" aria-selected="false">금리 뉴스 <span class="badge" id="news-badge" hidden></span></a>
     </nav>
-    <div class="fresh" id="fresh">데이터 불러오는 중…</div>
+    <div class="fresh-wrap">
+      <div class="fresh" id="fresh">데이터 불러오는 중…</div>
+      <button type="button" class="btn small" id="reload" title="GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.">↻ 다시 불러오기</button>
+    </div>
   </div>
 </header>
 
@@ -559,9 +566,30 @@ function renderFresh() {
   }
   if (META.news_updated) {
     const p = kstParts(Date.parse(META.news_updated));
-    parts.push(`뉴스 ${p.month}/${p.day} ${p.hour}:${p.minute} 갱신`);
+    parts.push(`마지막 갱신 ${p.month}/${p.day} ${p.hour}:${p.minute}`);
   }
+  const next = nextRunLabel();
+  if (next) parts.push(next);
   $("fresh").textContent = parts.join(" · ") || "갱신 정보 없음";
+}
+
+// update.yml 의 cron 과 같은 규칙: 평일 07~22시 매시, 주말 10·18시(KST).
+function nextRunMs(now = Date.now()) {
+  let t = Math.ceil(now / 3600e3) * 3600e3;
+  for (let i = 0; i < 24 * 8; i++, t += 3600e3) {
+    const k = new Date(t + 9 * 3600e3), d = k.getUTCDay(), h = k.getUTCHours();
+    if ((d >= 1 && d <= 5 && h >= 7 && h <= 22) || ((d === 0 || d === 6) && (h === 10 || h === 18))) return t;
+  }
+  return null;
+}
+function nextRunLabel() {
+  const t = nextRunMs();
+  if (!t) return "";
+  const ymd = o => o.year + o.month + o.day;
+  const p = kstParts(t);
+  const day = ymd(p) === ymd(kstParts(Date.now())) ? "" : ymd(p) === ymd(kstParts(Date.now() + 864e5)) ? "내일 " : `${p.weekday} `;
+  // GitHub 예약 실행은 보통 정각보다 몇 분~20분 늦게 돈다.
+  return `다음 자동 갱신 ${day}${p.hour}:${p.minute} 무렵`;
 }
 
 // ---------------------------------------------------------------- routing
@@ -1265,20 +1293,40 @@ async function boot() {
     $("caption").textContent = "";
   }
   route();
-  setInterval(refresh, 10 * 60 * 1000);
+  setInterval(() => refresh(false), 10 * 60 * 1000);
+  setInterval(renderFresh, 60 * 1000);
 }
-async function refresh() {
+// force: 바뀐 게 없어 보여도 금리·뉴스 파일을 다시 읽는다(버튼용).
+async function refresh(force) {
   const prev = { ...META };
   await loadMeta();
-  if (META.rates_updated !== prev.rates_updated) { try { await loadRates(); renderRates(); } catch { /* 다음 주기에 다시 */ } }
-  if (META.news_updated !== prev.news_updated) {
+  const changed = META.news_updated !== prev.news_updated || META.rates_updated !== prev.rates_updated;
+  let added = 0;
+  if (force || META.rates_updated !== prev.rates_updated) { try { await loadRates(); renderRates(); } catch { /* 다음 주기에 다시 */ } }
+  if (force || META.news_updated !== prev.news_updated) {
     try {
-      const added = await loadNews();
+      added = await loadNews();
       renderNews();
-      if (added) toast(`새 기사 ${added}건이 들어왔습니다.`);
+      if (added && !force) toast(`새 기사 ${added}건이 들어왔습니다.`);
     } catch { /* 다음 주기에 다시 */ }
   }
+  return { changed, added };
 }
+$("reload").addEventListener("click", async () => {
+  const b = $("reload");
+  b.disabled = true;
+  b.textContent = "불러오는 중…";
+  try {
+    const { changed, added } = await refresh(true);
+    toast(added ? `새 기사 ${added}건을 불러왔습니다.`
+      : changed ? "최신 데이터를 불러왔습니다."
+      : `이미 최신입니다. ${nextRunLabel()}`);
+  } catch {
+    toast("불러오지 못했습니다. 잠시 후 다시 눌러주세요.");
+  } finally {
+    setTimeout(() => { b.disabled = false; b.textContent = "↻ 다시 불러오기"; }, 3000);
+  }
+});
 boot();
 </script>
 </body>
