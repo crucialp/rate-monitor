@@ -47,7 +47,7 @@ TAGS = [
                  r"\[채권|채권-|IRS|BMSI|최종호가"),
     ("크레딧", r"회사채|크레딧|여전채|은행채|특수채|공사채|산금채|카드채|증권채|신용\s?스프레드|스프레드|전단채|\bCP\b|"
             r"수요예측|발행금리|신용등급|AA-?|채권\s?발행|녹색채권|조달"),
-    ("단기금융", r"\bCD\b|CD금리|콜금리|통안|단기자금|MMF|\bRP\b|레포|머니마켓|KOFR|코리보|FX스와프"),
+    ("단기금융", r"\bCD\b|CD금리|콜금리|통안|단기자금|MMF|\bRP\b|레포|머니마켓|KOFR|코리보"),
     ("해외금리", FOREIGN + r"|대외금리"),
     ("예금·대출", r"대출|예금|주담대|가산금리|우대금리|코픽스|COFIX|수신금리|여신금리"),
 ]
@@ -55,6 +55,9 @@ TAGS = [
 RELEVANT = (r"금리|채권|국채|국고채|기준금리|금통위|회사채|크레딧|통안|산금채|CD금리|콜금리|커브|"
             r"수익률\s?곡선|최종호가|\d+년물|통화정책|금융정책|연준|FOMC|BOJ|ECB|스프레드|여전채|은행채|코리보|KOFR")
 EXCLUDE = r"^\s*(<인사>|&lt;인사&gt;|\[부고\]|\[게시판\]|\[시사금융용어\]|\[포토\]|\[사진\])"
+# 달러·환율이 주제인 외환 기사는 금리 뉴스에서 뺀다(인포맥스 채권/외환 섹션에 섞여 들어옴).
+FX_PRIMARY = (r"^\s*\[외환\]|달러-원|원·달러|원/달러|원-달러|환율\s?(상승|하락|급등|급락|마감|전망)|NDF|"
+              r"외환시장|FX\s?스와프|달러\s?(강세|약세)|\d,\d{3}원")
 # 구글 뉴스에 섞여 들어오는 해외 번역 사이트 등
 EXCLUDE_SOURCES = {"Vietnam.vn"}
 
@@ -102,7 +105,8 @@ def tags_for(text: str) -> list[str]:
 
 def make_item(source, title, link, published, summary, via):
     text = f"{title} {summary[:120]}"
-    if source in EXCLUDE_SOURCES or re.search(EXCLUDE, title) or not re.search(RELEVANT, title):
+    if (source in EXCLUDE_SOURCES or re.search(EXCLUDE, title) or re.search(FX_PRIMARY, title)
+            or not re.search(RELEVANT, title)):
         return None
     return {
         "id": hashlib.sha1(norm_title(title).encode()).hexdigest()[:12],
@@ -184,7 +188,9 @@ def main() -> None:
         merged[it["id"]] = keep
 
     cutoff = now - timedelta(days=KEEP_DAYS)
-    items = [i for i in merged.values() if datetime.fromisoformat(i["p"]) >= cutoff]
+    # 필터를 바꾸면 이미 쌓인 기사에도 다시 적용한다.
+    items = [i for i in merged.values()
+             if datetime.fromisoformat(i["p"]) >= cutoff and not re.search(FX_PRIMARY, i["t"])]
     items.sort(key=lambda i: i["p"], reverse=True)
     items = items[:MAX_ITEMS]
 
