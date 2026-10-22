@@ -573,9 +573,11 @@ function renderFresh() {
   $("fresh").textContent = parts.join(" · ") || "갱신 정보 없음";
 }
 
-// update.yml 의 cron 과 같은 규칙: 평일 07~22시 매시, 주말 10·18시(KST).
+// update.yml 의 cron 과 같은 규칙: 평일 07~22시 매시 17분, 주말 10·18시 17분(KST).
+const RUN_MINUTE = 17;
 function nextRunMs(now = Date.now()) {
-  let t = Math.ceil(now / 3600e3) * 3600e3;
+  let t = Math.floor(now / 3600e3) * 3600e3 + RUN_MINUTE * 60e3;
+  if (t <= now) t += 3600e3;
   for (let i = 0; i < 24 * 8; i++, t += 3600e3) {
     const k = new Date(t + 9 * 3600e3), d = k.getUTCDay(), h = k.getUTCHours();
     if ((d >= 1 && d <= 5 && h >= 7 && h <= 22) || ((d === 0 || d === 6) && (h === 10 || h === 18))) return t;

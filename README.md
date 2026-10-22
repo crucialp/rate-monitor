@@ -7,7 +7,7 @@
 | 경로 | 역할 |
 |---|---|
 | `scripts/fetch_rates.py` | 한국은행 ECOS 일별 시장금리(817Y002)와 기준금리(722Y001)를 `docs/data/rates.csv`에 누적 |
-| `scripts/fetch_news.py` | 언론사 RSS와 Google 뉴스 검색에서 금리 기사를 골라 `docs/data/news.json`에 30일치 보관 |
+| `scripts/fetch_news.py` | 언론사 RSS와 Google 뉴스 검색에서 금리 기사를 골라 `docs/data/news.json`에 10일치 보관 |
 | `docs/index.html` | 사이트 전체(그래프, 표, 뉴스 인박스). 외부 라이브러리 없음 |
 | `.github/workflows/update.yml` | 평일 KST 07~22시 매시, 주말 10·18시 실행 → 수집 → 커밋 → Pages 배포 |
 
