@@ -1,0 +1,10 @@
+name = "rate-monitor"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+# Cloudflare 예약 실행은 UTC 기준. 매시 5분에 깨어나서, 실행할 시간대인지는 코드(shouldRun)가 판단한다.
+[triggers]
+crons = ["5 * * * *"]
+
+# GH_TOKEN(GitHub Actions 실행용)은 `wrangler secret put GH_TOKEN` 으로 넣는다. 파일에 적지 않는다.

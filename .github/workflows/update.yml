@@ -2,11 +2,9 @@ name: update-data
 
 on:
   schedule:
-    # 시간은 UTC. 평일 KST 07~22시 매시 17분, 주말 KST 10시·18시 17분.
-    # 정각은 GitHub 예약 실행이 몰려 건너뛰거나 늦어지는 일이 잦아 17분으로 둔다.
-    - cron: "17 22,23 * * 0-4"  # KST 월~금 07:17, 08:17
-    - cron: "17 0-13 * * 1-5"   # KST 월~금 09:17~22:17
-    - cron: "17 1,9 * * 0,6"    # KST 토·일 10:17, 18:17
+    # 평소 실행은 Cloudflare Worker(worker/)가 매시 5분에 workflow_dispatch 로 깨운다.
+    # GitHub 자체 예약은 정각·혼잡 시간에 자주 건너뛰어서, Worker 가 멈췄을 때를 대비한 하루 한 번 예비로만 둔다.
+    - cron: "47 23 * * *"   # KST 매일 08:47
   workflow_dispatch:
     inputs:
       full:

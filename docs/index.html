@@ -573,8 +573,8 @@ function renderFresh() {
   $("fresh").textContent = parts.join(" · ") || "갱신 정보 없음";
 }
 
-// update.yml 의 cron 과 같은 규칙: 평일 07~22시 매시 17분, 주말 10·18시 17분(KST).
-const RUN_MINUTE = 17;
+// Cloudflare Worker(worker/) 예약 실행과 같은 규칙: 평일 07~22시 매시 5분, 주말 10·18시 5분(KST).
+const RUN_MINUTE = 5;
 function nextRunMs(now = Date.now()) {
   let t = Math.floor(now / 3600e3) * 3600e3 + RUN_MINUTE * 60e3;
   if (t <= now) t += 3600e3;

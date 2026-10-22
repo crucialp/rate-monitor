@@ -1,6 +1,8 @@
 # 금리 모니터
 
-국고채·산금채·회사채·CD·기준금리 일별 추이(1페이지)와 금리 뉴스 인박스(2페이지)를 보여주는 정적 사이트입니다. GitHub Actions가 데이터를 모으고 GitHub Pages로 배포합니다.
+국고채·산금채·회사채·CD·기준금리 일별 추이(1페이지)와 금리 뉴스 인박스(2페이지)를 보여주는 정적 사이트입니다. GitHub Actions가 데이터를 모으고, Cloudflare Worker가 사이트를 내보내며 매시 수집을 깨웁니다.
+
+- 공유 주소: https://rate-monitor.quotecheck-app.workers.dev (GitHub Pages 주소 https://crucialp.github.io/rate-monitor/ 도 같은 내용)
 
 ## 구성
 
@@ -9,7 +11,8 @@
 | `scripts/fetch_rates.py` | 한국은행 ECOS 일별 시장금리(817Y002)와 기준금리(722Y001)를 `docs/data/rates.csv`에 누적 |
 | `scripts/fetch_news.py` | 언론사 RSS와 Google 뉴스 검색에서 금리 기사를 골라 `docs/data/news.json`에 10일치 보관 |
 | `docs/index.html` | 사이트 전체(그래프, 표, 뉴스 인박스). 외부 라이브러리 없음 |
-| `.github/workflows/update.yml` | 평일 KST 07~22시 매시, 주말 10·18시 실행 → 수집 → 커밋 → Pages 배포 |
+| `.github/workflows/update.yml` | 수집 → 커밋 → Pages 배포. Worker 신호로 실행되고, 예비로 매일 08:47 자체 실행 |
+| `worker/` | Cloudflare Worker. 사이트 제공(GitHub 파일 중계) + 평일 07~22시 매시 5분·주말 10·18시 5분 수집 실행 신호 |
 
 두 스크립트 모두 파이썬 표준 라이브러리만 씁니다.
 
@@ -18,6 +21,15 @@
 1. 저장소 **Settings → Secrets and variables → Actions**에 `ECOS_API_KEY` 추가
 2. **Settings → Pages → Build and deployment → Source**를 `GitHub Actions`로 변경
 3. **Actions → update-data → Run workflow** 한 번 실행. `rates.csv`가 없으면 2000년부터 전부 받습니다(2~3분).
+
+## Cloudflare Worker
+
+```
+cd worker
+npx wrangler deploy                 # 코드 배포
+npx wrangler secret put GH_TOKEN    # GitHub Actions 실행 권한이 있는 토큰
+npx wrangler tail                   # 실행 로그 보기
+```
 
 ## 로컬 실행
 
