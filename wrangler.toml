@@ -1,0 +1,11 @@
+# Cloudflare Pages(rate-monitor.pages.dev) 설정. 배포: npx wrangler pages deploy
+# 예약 실행이 든 Worker 설정은 worker/wrangler.toml 에 따로 있다.
+name = "rate-monitor"
+pages_build_output_dir = "./pages"
+compatibility_date = "2026-09-01"
+
+# 방문 기록(관리자 화면 /admin). ADMIN_PASSWORD 는 `wrangler pages secret put ADMIN_PASSWORD --project-name rate-monitor` 로 넣는다.
+[[d1_databases]]
+binding = "DB"
+database_name = "rate-monitor-visits"
+database_id = "c0d6c9bb-7f3b-4360-87b0-468d75485c96"

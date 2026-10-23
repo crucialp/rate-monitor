@@ -3,15 +3,17 @@
 // 2) 예약 실행: 매시 5분에 GitHub Actions(update.yml)를 실행시켜 금리·뉴스를 갱신한다.
 //    GitHub 자체 예약 실행은 정각 혼잡 때 자주 건너뛰어서 여기서 확실하게 깨운다.
 import { serveSite } from "./site.js";
+import { pruneVisits } from "./admin.js";
 
 const WORKFLOW = "https://api.github.com/repos/crucialp/rate-monitor/actions/workflows/update.yml/dispatches";
 
 export default {
   fetch(request, env, ctx) {
-    return serveSite(request, ctx);
+    return serveSite(request, env, ctx);
   },
 
   async scheduled(event, env, ctx) {
+    ctx.waitUntil(pruneVisits(env)); // 90일 지난 방문 기록 삭제
     if (!shouldRun(event.scheduledTime)) return;
     ctx.waitUntil(dispatch(env));
   },

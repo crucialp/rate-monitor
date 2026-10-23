@@ -27,12 +27,20 @@
 ## Cloudflare Worker
 
 ```
-npx wrangler pages deploy pages --project-name rate-monitor --branch main   # Pages(대표 주소) 배포
+npx wrangler pages deploy --branch main   # Pages(대표 주소) 배포. 설정은 루트 wrangler.toml
 cd worker
 npx wrangler deploy                 # Worker(예약 실행) 배포
 npx wrangler secret put GH_TOKEN    # GitHub Actions 실행 권한이 있는 토큰
 npx wrangler tail                   # 실행 로그 보기
 ```
+
+## 방문 기록(관리자 전용)
+
+- 주소: https://rate-monitor.pages.dev/admin (비밀번호는 로컬 `.env`의 `ADMIN_PASSWORD`, 아이디는 아무거나)
+- 페이지를 처음 열 때마다 시각·IP·지역·통신사·기기를 D1 `rate-monitor-visits`에 남기고, 90일 지난 기록은 Worker 예약 실행이 지웁니다.
+- 주소로 조건 지정: `/admin?days=30&bots=1&hideMe=1`
+- 테이블 만들기: `npx wrangler d1 execute rate-monitor-visits --remote --file worker/schema.sql`
+- 비밀번호 바꾸기: `npx wrangler pages secret put ADMIN_PASSWORD --project-name rate-monitor` 후 `npx wrangler pages deploy`, Worker 쪽은 `cd worker && npx wrangler secret put ADMIN_PASSWORD`
 
 ## 로컬 실행
 

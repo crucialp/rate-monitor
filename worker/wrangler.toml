@@ -8,3 +8,9 @@ workers_dev = true
 crons = ["5 * * * *"]
 
 # GH_TOKEN(GitHub Actions 실행용)은 `wrangler secret put GH_TOKEN` 으로 넣는다. 파일에 적지 않는다.
+
+# 방문 기록(관리자 화면 /admin). ADMIN_PASSWORD 는 `wrangler secret put ADMIN_PASSWORD` 로 넣는다.
+[[d1_databases]]
+binding = "DB"
+database_name = "rate-monitor-visits"
+database_id = "c0d6c9bb-7f3b-4360-87b0-468d75485c96"
