@@ -14,6 +14,7 @@ const TYPES = {
   svg: "image/svg+xml",
   png: "image/png",
   ico: "image/x-icon",
+  txt: "text/plain; charset=utf-8",
 };
 const FRESH_SECONDS = 60; // 데이터 파일은 1분, 페이지는 5분 캐시
 const PAGE_SECONDS = 300;
@@ -73,7 +74,7 @@ async function logVisit(request, env, url) {
       cf.city || "",
       cf.asOrganization || "",
       ua,
-      isBot(ua) ? 1 : 0,
+      isBot(ua, cf.asOrganization) ? 1 : 0,
       url.host,
       url.search.slice(0, 200),
       (request.headers.get("referer") || "").slice(0, 300),
