@@ -110,6 +110,16 @@ button { cursor: pointer; }
 .fresh { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .btn.small { padding: 3px 10px; font-size: 12.5px; }
 .btn:disabled { opacity: 0.55; cursor: default; }
+.lang {
+  border: 1px solid var(--hair);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 3px 6px;
+  font-size: 12.5px;
+}
+/* 외국어는 묶음 이름이 길어서 왼쪽 칸을 넓힌다 */
+html:not([lang="ko"]) .group { grid-template-columns: 9.5em minmax(0, 1fr); }
 .btn:disabled:hover { background: var(--surface); }
 
 main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 48px; }
@@ -403,15 +413,21 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
   <div class="topbar-inner">
     <div class="brand">
       <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M6 22 L12 15 L17 18 L26 9" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      금리 모니터
+      <span data-i18n="brand">금리 모니터</span>
     </div>
-    <nav class="tabs" role="tablist" aria-label="페이지">
-      <a href="#rates" role="tab" id="tab-rates" aria-controls="page-rates" aria-selected="true">금리 추이</a>
-      <a href="#news" role="tab" id="tab-news" aria-controls="page-news" aria-selected="false">금리 뉴스 <span class="badge" id="news-badge" hidden></span></a>
+    <nav class="tabs" role="tablist" data-i18n-aria="navAria" aria-label="페이지">
+      <a href="#rates" role="tab" id="tab-rates" aria-controls="page-rates" aria-selected="true"><span data-i18n="tabRates">금리 추이</span></a>
+      <a href="#news" role="tab" id="tab-news" aria-controls="page-news" aria-selected="false"><span data-i18n="tabNews">금리 뉴스</span> <span class="badge" id="news-badge" hidden></span></a>
     </nav>
     <div class="fresh-wrap">
-      <div class="fresh" id="fresh">데이터 불러오는 중…</div>
-      <button type="button" class="btn small" id="reload" title="GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.">↻ 다시 불러오기</button>
+      <div class="fresh" id="fresh" data-i18n="loading">데이터 불러오는 중…</div>
+      <button type="button" class="btn small" id="reload" data-i18n="reload" data-i18n-title="reloadTitle" title="GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.">↻ 다시 불러오기</button>
+      <select id="lang" class="lang" data-i18n-aria="langAria" aria-label="언어">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文</option>
+      </select>
     </div>
   </div>
 </header>
@@ -420,83 +436,83 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
   <!-- Page 1: rates -->
   <section class="page" id="page-rates" role="tabpanel" aria-labelledby="tab-rates">
     <div class="page-head">
-      <h1>금리 추이</h1>
-      <p class="lede">한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.</p>
+      <h1 data-i18n="h1Rates">금리 추이</h1>
+      <p class="lede" data-i18n="ledeRates">한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.</p>
     </div>
 
     <div class="toolbar">
       <div class="field">
-        <span class="label">기간</span>
-        <div class="seg" id="presets" role="group" aria-label="기간 빠른 선택">
-          <button type="button" id="p-1M" data-p="1M" aria-pressed="false">1개월</button>
-          <button type="button" id="p-3M" data-p="3M" aria-pressed="false">3개월</button>
-          <button type="button" id="p-6M" data-p="6M" aria-pressed="false">6개월</button>
-          <button type="button" id="p-1Y" data-p="1Y" aria-pressed="true">1년</button>
-          <button type="button" id="p-3Y" data-p="3Y" aria-pressed="false">3년</button>
-          <button type="button" id="p-5Y" data-p="5Y" aria-pressed="false">5년</button>
-          <button type="button" id="p-10Y" data-p="10Y" aria-pressed="false">10년</button>
-          <button type="button" id="p-ALL" data-p="ALL" aria-pressed="false">전체</button>
+        <span class="label" data-i18n="period">기간</span>
+        <div class="seg" id="presets" role="group" data-i18n-aria="periodAria" aria-label="기간 빠른 선택">
+          <button type="button" id="p-1M" data-p="1M" data-i18n="p1M" aria-pressed="false">1개월</button>
+          <button type="button" id="p-3M" data-p="3M" data-i18n="p3M" aria-pressed="false">3개월</button>
+          <button type="button" id="p-6M" data-p="6M" data-i18n="p6M" aria-pressed="false">6개월</button>
+          <button type="button" id="p-1Y" data-p="1Y" data-i18n="p1Y" aria-pressed="true">1년</button>
+          <button type="button" id="p-3Y" data-p="3Y" data-i18n="p3Y" aria-pressed="false">3년</button>
+          <button type="button" id="p-5Y" data-p="5Y" data-i18n="p5Y" aria-pressed="false">5년</button>
+          <button type="button" id="p-10Y" data-p="10Y" data-i18n="p10Y" aria-pressed="false">10년</button>
+          <button type="button" id="p-ALL" data-p="ALL" data-i18n="pALL" aria-pressed="false">전체</button>
         </div>
       </div>
       <div class="field">
-        <label class="label" for="d-from">직접 지정</label>
+        <label class="label" for="d-from" data-i18n="custom">직접 지정</label>
         <div class="dates">
-          <input type="date" id="d-from" aria-label="시작일">
+          <input type="date" id="d-from" data-i18n-aria="fromAria" aria-label="시작일">
           <span aria-hidden="true">~</span>
-          <input type="date" id="d-to" aria-label="종료일">
+          <input type="date" id="d-to" data-i18n-aria="toAria" aria-label="종료일">
         </div>
       </div>
       <div class="field">
-        <span class="label">단위</span>
+        <span class="label" data-i18n="unit">단위</span>
         <div class="field-row">
-          <div class="seg" id="units" role="group" aria-label="집계 단위">
-            <button type="button" id="u-auto" data-u="auto" aria-pressed="true">자동</button>
-            <button type="button" id="u-D" data-u="D" aria-pressed="false">일</button>
-            <button type="button" id="u-M" data-u="M" aria-pressed="false">월</button>
-            <button type="button" id="u-Y" data-u="Y" aria-pressed="false">연</button>
+          <div class="seg" id="units" role="group" data-i18n-aria="unitAria" aria-label="집계 단위">
+            <button type="button" id="u-auto" data-u="auto" data-i18n="uAuto" aria-pressed="true">자동</button>
+            <button type="button" id="u-D" data-u="D" data-i18n="uD" aria-pressed="false">일</button>
+            <button type="button" id="u-M" data-u="M" data-i18n="uM" aria-pressed="false">월</button>
+            <button type="button" id="u-Y" data-u="Y" data-i18n="uY" aria-pressed="false">연</button>
           </div>
           <span class="hint" id="unit-hint"></span>
         </div>
       </div>
     </div>
 
-    <div class="series" id="series" aria-label="계열 선택"></div>
-    <p class="limit-msg" id="limit-msg" hidden>한 번에 8개까지 볼 수 있습니다. 다른 계열을 먼저 끄세요.</p>
+    <div class="series" id="series" data-i18n-aria="seriesAria" aria-label="계열 선택"></div>
+    <p class="limit-msg" id="limit-msg" data-i18n="limitMsg" hidden>한 번에 8개까지 볼 수 있습니다. 다른 계열을 먼저 끄세요.</p>
 
-    <section class="card" aria-label="금리 그래프">
-      <div class="chart-wrap" id="chart" tabindex="0" aria-label="금리 그래프. 좌우 화살표로 날짜를 옮기면 값이 표시됩니다."></div>
+    <section class="card" data-i18n-aria="chartCardAria" aria-label="금리 그래프">
+      <div class="chart-wrap" id="chart" tabindex="0" data-i18n-aria="chartAria" aria-label="금리 그래프. 좌우 화살표로 날짜를 옮기면 값이 표시됩니다."></div>
       <p class="caption" id="caption"></p>
     </section>
 
     <div class="table-head">
       <h2 id="tbl-title">기간 데이터</h2>
-      <button type="button" class="btn" id="csv">CSV 내려받기 (17개 계열 전체)</button>
+      <button type="button" class="btn" id="csv" data-i18n="csv">CSV 내려받기 (17개 계열 전체)</button>
     </div>
     <div class="table-scroll"><table id="tbl"></table></div>
     <p class="note" id="tbl-note"></p>
 
     <details class="sources">
-      <summary>인포맥스 금리는 어디서 오나</summary>
+      <summary data-i18n="srcSummary">인포맥스 금리는 어디서 오나</summary>
       <div class="src-list">
         <article class="src this">
-          <span class="tag">KOFIA · 이 페이지의 기준</span>
-          <h3>금융투자협회 최종호가수익률</h3>
-          <p>매일 장 마감 후 지정 증권사들이 보고한 호가에서 극단값을 빼고 평균한 수익률입니다. 국고채, 통안채, 산금채, CD, 회사채의 대표 금리로 가장 널리 쓰이며, 한국은행 ECOS 시장금리도 이 값을 옮겨 씁니다.</p>
+          <span class="tag" data-i18n="src1Tag">KOFIA · 이 페이지의 기준</span>
+          <h3 data-i18n="src1Title">금융투자협회 최종호가수익률</h3>
+          <p data-i18n="src1Body">매일 장 마감 후 지정 증권사들이 보고한 호가에서 극단값을 빼고 평균한 수익률입니다. 국고채, 통안채, 산금채, CD, 회사채의 대표 금리로 가장 널리 쓰이며, 한국은행 ECOS 시장금리도 이 값을 옮겨 씁니다.</p>
         </article>
         <article class="src">
-          <span class="tag">민평 · 채권평가사 4사</span>
-          <h3>민간 채권평가사 평균</h3>
-          <p>KIS자산평가, 한국자산평가, NICE P&amp;I, FN자산평가의 시가평가 수익률 평균입니다. 은행채·여전채·공사채 커브와 개별 종목은 대부분 이 값입니다. 이 페이지의 '회사채 AA- 민평'이 여기에 해당합니다.</p>
+          <span class="tag" data-i18n="src2Tag">민평 · 채권평가사 4사</span>
+          <h3 data-i18n="src2Title">민간 채권평가사 평균</h3>
+          <p data-i18n="src2Body">KIS자산평가, 한국자산평가, NICE P&amp;I, FN자산평가의 시가평가 수익률 평균입니다. 은행채·여전채·공사채 커브와 개별 종목은 대부분 이 값입니다. 이 페이지의 '회사채 AA- 민평'이 여기에 해당합니다.</p>
         </article>
         <article class="src">
-          <span class="tag">KRX · 장내</span>
-          <h3>국채전문유통시장 체결</h3>
-          <p>한국거래소에서 실제 체결된 국고채 지표물 수익률입니다. 장중 실시간 국고채 금리는 대부분 여기서 나옵니다.</p>
+          <span class="tag" data-i18n="src3Tag">KRX · 장내</span>
+          <h3 data-i18n="src3Title">국채전문유통시장 체결</h3>
+          <p data-i18n="src3Body">한국거래소에서 실제 체결된 국고채 지표물 수익률입니다. 장중 실시간 국고채 금리는 대부분 여기서 나옵니다.</p>
         </article>
         <article class="src">
-          <span class="tag">장외 · 체결과 호가</span>
-          <h3>장외 거래 체결·중개 호가</h3>
-          <p>금투협에 보고되는 장외 채권 체결 내역과 중개사 호가를 인포맥스가 모아 정리한 값입니다. 인포맥스식 가공 화면은 외부 API로 받을 수 없습니다.</p>
+          <span class="tag" data-i18n="src4Tag">장외 · 체결과 호가</span>
+          <h3 data-i18n="src4Title">장외 거래 체결·중개 호가</h3>
+          <p data-i18n="src4Body">금투협에 보고되는 장외 채권 체결 내역과 중개사 호가를 인포맥스가 모아 정리한 값입니다. 인포맥스식 가공 화면은 외부 API로 받을 수 없습니다.</p>
         </article>
       </div>
     </details>
@@ -505,29 +521,29 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
   <!-- Page 2: news inbox -->
   <section class="page" id="page-news" role="tabpanel" aria-labelledby="tab-news" hidden>
     <div class="page-head">
-      <h1>금리 뉴스</h1>
-      <p class="lede">연합인포맥스 채권/외환·정책/금융, 연합뉴스, 한국경제, Google 뉴스 검색에서 금리 관련 기사를 모읍니다. 평일 07~22시에 매시간 갱신되고, 이 화면은 10분마다 새 기사를 확인합니다.</p>
+      <h1 data-i18n="h1News">금리 뉴스</h1>
+      <p class="lede" data-i18n="ledeNews">연합인포맥스 채권/외환·정책/금융, 연합뉴스, 한국경제, Google 뉴스 검색에서 금리 관련 기사를 모읍니다. 평일 07~22시에 매시간 갱신되고, 이 화면은 10분마다 새 기사를 확인합니다.</p>
     </div>
     <div class="news-toolbar">
-      <input type="search" class="search" id="q" placeholder="제목·요약 검색" aria-label="기사 검색">
-      <select id="src" aria-label="매체"></select>
-      <label class="check"><input type="checkbox" id="unread-only"> 안 읽은 기사만</label>
+      <input type="search" class="search" id="q" data-i18n-ph="searchPh" placeholder="제목·요약 검색" data-i18n-aria="searchAria" aria-label="기사 검색">
+      <select id="src" data-i18n-aria="srcAria" aria-label="매체"></select>
+      <label class="check"><input type="checkbox" id="unread-only"> <span data-i18n="unreadOnly">안 읽은 기사만</span></label>
       <div class="toolbar-end">
-        <button type="button" class="btn" id="mark-all">모두 읽음</button>
+        <button type="button" class="btn" id="mark-all" data-i18n="markAll">모두 읽음</button>
       </div>
-      <div class="cats" id="cats" role="group" aria-label="분류"></div>
+      <div class="cats" id="cats" role="group" data-i18n-aria="catsAria" aria-label="분류"></div>
     </div>
     <div class="inbox">
-      <div class="list" id="list" tabindex="0" role="listbox" aria-label="기사 목록"></div>
+      <div class="list" id="list" tabindex="0" role="listbox" data-i18n-aria="listAria" aria-label="기사 목록"></div>
       <article class="reader" id="reader" aria-live="polite"></article>
     </div>
-    <p class="note">기사 저작권은 각 언론사에 있습니다. 이 페이지는 제목, 매체가 RSS로 제공한 요약 앞부분, 원문 링크만 보여줍니다. 읽음 표시는 이 브라우저에만 저장됩니다. 단축키: j/k 또는 ↑/↓ 이동, Enter 원문 열기.</p>
+    <p class="note" data-i18n="noteNews">기사 저작권은 각 언론사에 있습니다. 이 페이지는 제목, 매체가 RSS로 제공한 요약 앞부분, 원문 링크만 보여줍니다. 읽음 표시는 이 브라우저에만 저장됩니다. 단축키: j/k 또는 ↑/↓ 이동, Enter 원문 열기.</p>
   </section>
 </main>
 
 <footer>
-  데이터: 한국은행 ECOS Open API 817Y002(시장금리 일별), 722Y001(기준금리). 뉴스: 각 언론사 RSS, Google 뉴스. GitHub Actions로 자동 수집.<br>
-  운영 통계를 위해 접속 기록(IP, 접속 시각, 지역, 기기 정보)을 90일간 보관한 뒤 자동 삭제합니다.
+  <span data-i18n="footer1">데이터: 한국은행 ECOS Open API 817Y002(시장금리 일별), 722Y001(기준금리). 뉴스: 각 언론사 RSS, Google 뉴스. GitHub Actions로 자동 수집.</span><br>
+  <span data-i18n="footer2">운영 통계를 위해 접속 기록(IP, 접속 시각, 지역, 기기 정보)을 90일간 보관한 뒤 자동 삭제합니다.</span>
 </footer>
 
 <div class="toast" id="toast" role="status" hidden></div>
@@ -540,16 +556,249 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem("rm_" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem("rm_" + k, JSON.stringify(v)); } catch { /* 저장 불가 환경 */ } },
 };
+// ---------------------------------------------------------------- i18n
+// 화면 문구는 모두 여기서 고른다. 외국어에서는 계열·분류 이름에 '한국' 것임을 밝힌다.
+// 기사 제목·요약은 원문(한국어) 그대로 둔다.
+const LANGS = ["ko", "en", "ja", "zh"];
+const LOCALE = { ko: "ko-KR", en: "en-US", ja: "ja-JP", zh: "zh-CN" };
+const I18N = {
+  ko: {
+    docTitle: "금리 모니터", brand: "금리 모니터", tabRates: "금리 추이", tabNews: "금리 뉴스", navAria: "페이지", langAria: "언어",
+    loading: "데이터 불러오는 중…", reload: "↻ 다시 불러오기", reloading: "불러오는 중…",
+    reloadTitle: "GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.",
+    h1Rates: "금리 추이",
+    ledeRates: "한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.",
+    period: "기간", periodAria: "기간 빠른 선택", p1M: "1개월", p3M: "3개월", p6M: "6개월", p1Y: "1년", p3Y: "3년", p5Y: "5년", p10Y: "10년", pALL: "전체",
+    custom: "직접 지정", fromAria: "시작일", toAria: "종료일",
+    unit: "단위", unitAria: "집계 단위", uAuto: "자동", uD: "일", uM: "월", uY: "연",
+    unitD: "일별", unitM: "월평균", unitY: "연평균",
+    seriesAria: "계열 선택", limitMsg: "한 번에 8개까지 볼 수 있습니다. 다른 계열을 먼저 끄세요.",
+    chartCardAria: "금리 그래프", chartAria: "금리 그래프. 좌우 화살표로 날짜를 옮기면 값이 표시됩니다.", chartSvgAria: "기간별 금리 선 그래프",
+    axisUnit: "연%", emptyNoSeries: "위에서 계열을 하나 이상 켜주세요.", emptyNoData: "선택한 기간에 자료가 없습니다.",
+    tipNone: "이 시점에 켜진 계열 값이 없습니다.", noRange: "기간 내 자료 없음", chipDelta: "기간 {0}",
+    keyM: "{0}년 {1}월 평균", keyMPartial: " ({0}일까지)", keyY: "{0}년 평균", keyYPartial: " ({0}/{1}까지)",
+    tblTitle: "기간 데이터 · {0}", csv: "CSV 내려받기 (17개 계열 전체)", colD: "날짜", colM: "월", colY: "연도",
+    noteMaxRows: "최근 {0}행만 표시했습니다. 전체는 CSV로 받으세요.", notePartial: "* 표시는 아직 끝나지 않은 기간의 평균({0}까지)입니다.",
+    capDays: "영업일 {0}일", capPartial: "마지막 점(빈 원)은 {0}까지의 평균", capStep: "기준금리는 계단형",
+    csvName: "금리", noRatesYet: "금리 자료가 아직 없습니다. 자동 수집이 처음 성공하면 여기에 그래프가 나옵니다.",
+    freshRates: "금리 {0}월 {1}일 기준", freshUpd: "마지막 갱신 {0}", freshNext: "다음 자동 갱신 {0} 무렵", tomorrow: "내일", noFresh: "갱신 정보 없음", kst: "",
+    srcSummary: "인포맥스 금리는 어디서 오나",
+    src1Tag: "KOFIA · 이 페이지의 기준", src1Title: "금융투자협회 최종호가수익률",
+    src1Body: "매일 장 마감 후 지정 증권사들이 보고한 호가에서 극단값을 빼고 평균한 수익률입니다. 국고채, 통안채, 산금채, CD, 회사채의 대표 금리로 가장 널리 쓰이며, 한국은행 ECOS 시장금리도 이 값을 옮겨 씁니다.",
+    src2Tag: "민평 · 채권평가사 4사", src2Title: "민간 채권평가사 평균",
+    src2Body: "KIS자산평가, 한국자산평가, NICE P&I, FN자산평가의 시가평가 수익률 평균입니다. 은행채·여전채·공사채 커브와 개별 종목은 대부분 이 값입니다. 이 페이지의 '회사채 AA- 민평'이 여기에 해당합니다.",
+    src3Tag: "KRX · 장내", src3Title: "국채전문유통시장 체결",
+    src3Body: "한국거래소에서 실제 체결된 국고채 지표물 수익률입니다. 장중 실시간 국고채 금리는 대부분 여기서 나옵니다.",
+    src4Tag: "장외 · 체결과 호가", src4Title: "장외 거래 체결·중개 호가",
+    src4Body: "금투협에 보고되는 장외 채권 체결 내역과 중개사 호가를 인포맥스가 모아 정리한 값입니다. 인포맥스식 가공 화면은 외부 API로 받을 수 없습니다.",
+    h1News: "금리 뉴스",
+    ledeNews: "연합인포맥스 채권/외환·정책/금융, 연합뉴스, 한국경제, Google 뉴스 검색에서 금리 관련 기사를 모읍니다. 평일 07~22시에 매시간 갱신되고, 이 화면은 10분마다 새 기사를 확인합니다.",
+    searchPh: "제목·요약 검색", searchAria: "기사 검색", srcAria: "매체", allSources: "모든 매체", otherSources: "그 밖의 매체",
+    unreadOnly: "안 읽은 기사만", markAll: "모두 읽음", catsAria: "분류", listAria: "기사 목록",
+    noteNews: "기사 저작권은 각 언론사에 있습니다. 이 페이지는 제목, 매체가 RSS로 제공한 요약 앞부분, 원문 링크만 보여줍니다. 읽음 표시는 이 브라우저에만 저장됩니다. 단축키: j/k 또는 ↑/↓ 이동, Enter 원문 열기.",
+    emptyFiltered: "조건에 맞는 기사가 없습니다. 검색어나 분류를 바꿔보세요.", emptyNone: "아직 수집된 기사가 없습니다.",
+    today: "오늘", yesterday: "어제", justNow: "방금",
+    readerEmpty: "왼쪽 목록에서 기사를 고르면 요약과 원문 링크가 여기에 나옵니다.", viaGoogle: " · Google 뉴스 경유",
+    noSummary: "이 매체는 RSS로 요약을 제공하지 않습니다. 원문에서 확인하세요.", openOriginal: "원문 열기 ↗",
+    toastMarkAll: "모든 기사를 읽음으로 표시했습니다.", toastNew: "새 기사 {0}건이 들어왔습니다.", toastLoaded: "새 기사 {0}건을 불러왔습니다.",
+    toastFresh: "최신 데이터를 불러왔습니다.", toastAlready: "이미 최신입니다. {0}", toastFail: "불러오지 못했습니다. 잠시 후 다시 눌러주세요.",
+    footer1: "데이터: 한국은행 ECOS Open API 817Y002(시장금리 일별), 722Y001(기준금리). 뉴스: 각 언론사 RSS, Google 뉴스. GitHub Actions로 자동 수집.",
+    footer2: "운영 통계를 위해 접속 기록(IP, 접속 시각, 지역, 기기 정보)을 90일간 보관한 뒤 자동 삭제합니다.",
+  },
+  en: {
+    docTitle: "Korea Rate Monitor", brand: "Korea Rate Monitor", tabRates: "Korean Rates", tabNews: "Korean Rate News", navAria: "Pages", langAria: "Language",
+    loading: "Loading data…", reload: "↻ Reload", reloading: "Loading…",
+    reloadTitle: "Re-reads the latest published data. No cost.",
+    h1Rates: "Korean Interest Rates",
+    ledeRates: "Daily Korean market rates from the Bank of Korea (ECOS). Bond and CD yields are KOFIA closing quotes. Short ranges show daily values; longer ranges switch to monthly or yearly averages.",
+    period: "Period", periodAria: "Quick period", p1M: "1M", p3M: "3M", p6M: "6M", p1Y: "1Y", p3Y: "3Y", p5Y: "5Y", p10Y: "10Y", pALL: "All",
+    custom: "Custom range", fromAria: "Start date", toAria: "End date",
+    unit: "Interval", unitAria: "Aggregation", uAuto: "Auto", uD: "Daily", uM: "Monthly", uY: "Yearly",
+    unitD: "Daily", unitM: "Monthly avg.", unitY: "Yearly avg.",
+    seriesAria: "Series", limitMsg: "You can show up to 8 series at a time. Turn one off first.",
+    chartCardAria: "Korean rate chart", chartAria: "Korean rate chart. Use the left and right arrow keys to move through dates.", chartSvgAria: "Line chart of Korean interest rates",
+    axisUnit: "% p.a.", emptyNoSeries: "Turn on at least one series above.", emptyNoData: "No data for the selected range.",
+    tipNone: "No values for the selected series at this point.", noRange: "No data in range", chipDelta: "{0} in range",
+    keyM: "{1}/{0} avg.", keyMPartial: " (through day {0})", keyY: "{0} avg.", keyYPartial: " (through {0}/{1})",
+    tblTitle: "Data · {0}", csv: "Download CSV (all 17 series)", colD: "Date", colM: "Month", colY: "Year",
+    noteMaxRows: "Showing the latest {0} rows. Download the CSV for everything.", notePartial: "* Period still in progress: average through {0}.",
+    capDays: "{0} business days", capPartial: "last point (hollow) averages through {0}", capStep: "BOK base rate drawn as steps",
+    csvName: "korea-rates", noRatesYet: "Rate data isn't available yet. The chart appears after the first successful collection.",
+    freshRates: "Rates as of {0}/{1}", freshUpd: "Updated {0}", freshNext: "Next auto-update ~{0}", tomorrow: "tomorrow ", noFresh: "No update info", kst: " KST",
+    srcSummary: "Where Korean rate data comes from (as shown on Yonhap Infomax)",
+    src1Tag: "KOFIA · used on this page", src1Title: "KOFIA closing quote yields",
+    src1Body: "After each trading day, designated Korean securities firms report quotes to the Korea Financial Investment Association (KOFIA); the extremes are dropped and the rest averaged. These are the benchmark yields for Korean Treasury Bonds (KTB), Monetary Stabilization Bonds, KDB bonds, CDs and corporate bonds, and the Bank of Korea's ECOS market rates use them as-is.",
+    src2Tag: "Private valuation · 4 Korean pricing agencies", src2Title: "Average of private bond pricing agencies",
+    src2Body: "Average mark-to-market yields from KIS Pricing, Korea Asset Pricing, NICE P&I and FN Pricing. Most curves for Korean bank, card/capital and public-agency bonds, and individual issues, use these. 'Korea Corp. AA- 3Y (pricing avg.)' on this page is this type.",
+    src3Tag: "KRX · exchange", src3Title: "Korea Exchange KTB market trades",
+    src3Body: "Yields of benchmark Korean Treasury Bonds actually traded on the Korea Exchange. Most intraday real-time KTB yields come from here.",
+    src4Tag: "OTC · trades and quotes", src4Title: "OTC trades and broker quotes",
+    src4Body: "OTC bond trades reported to KOFIA plus broker quotes, compiled by Yonhap Infomax. Infomax's processed screens are not available through a public API.",
+    h1News: "Korean Rate News",
+    ledeNews: "Articles on Korean interest rates collected from Yonhap Infomax (Bonds/FX, Policy/Finance), Yonhap News, The Korea Economic Daily and Google News search. Updated hourly 07:00–22:00 KST on weekdays; this page checks for new articles every 10 minutes. Titles and summaries are shown in the original Korean.",
+    searchPh: "Search titles and summaries", searchAria: "Search articles", srcAria: "Source", allSources: "All sources", otherSources: "Other sources",
+    unreadOnly: "Unread only", markAll: "Mark all read", catsAria: "Categories", listAria: "Article list",
+    noteNews: "Copyright of each article belongs to its publisher. This page shows only the title, the start of the summary in the publisher's RSS feed, and a link to the original. Read marks are stored only in this browser. Shortcuts: j/k or ↑/↓ to move, Enter to open the original.",
+    emptyFiltered: "No articles match. Try another search or category.", emptyNone: "No articles collected yet.",
+    today: "Today", yesterday: "Yesterday", justNow: "just now",
+    readerEmpty: "Pick an article on the left to see its summary and a link to the original here.", viaGoogle: " · via Google News",
+    noSummary: "This publisher's RSS feed has no summary. Open the original to read it.", openOriginal: "Open original ↗",
+    toastMarkAll: "Marked all articles as read.", toastNew: "{0} new articles arrived.", toastLoaded: "Loaded {0} new articles.",
+    toastFresh: "Loaded the latest data.", toastAlready: "Already up to date. {0}", toastFail: "Couldn't load. Please try again shortly.",
+    footer1: "Data: Bank of Korea ECOS Open API 817Y002 (daily Korean market rates), 722Y001 (BOK base rate). News: publisher RSS feeds, Google News. Collected automatically with GitHub Actions.",
+    footer2: "Access logs (IP, time, region, device) are kept for 90 days for operating statistics, then deleted automatically.",
+  },
+  ja: {
+    docTitle: "韓国金利モニター", brand: "韓国金利モニター", tabRates: "韓国金利の推移", tabNews: "韓国金利ニュース", navAria: "ページ", langAria: "言語",
+    loading: "データを読み込み中…", reload: "↻ 再読み込み", reloading: "読み込み中…",
+    reloadTitle: "公開済みの最新データを読み直します（費用はかかりません）。",
+    h1Rates: "韓国の金利推移",
+    ledeRates: "韓国銀行（ECOS）の日次市場金利です。債券・CDは韓国金融投資協会（KOFIA）の最終呼値利回り。期間が短いと日次、長いと月平均・年平均で表示します。",
+    period: "期間", periodAria: "期間の選択", p1M: "1か月", p3M: "3か月", p6M: "6か月", p1Y: "1年", p3Y: "3年", p5Y: "5年", p10Y: "10年", pALL: "全期間",
+    custom: "期間指定", fromAria: "開始日", toAria: "終了日",
+    unit: "単位", unitAria: "集計単位", uAuto: "自動", uD: "日", uM: "月", uY: "年",
+    unitD: "日次", unitM: "月平均", unitY: "年平均",
+    seriesAria: "系列の選択", limitMsg: "同時に表示できるのは8系列までです。先に他の系列をオフにしてください。",
+    chartCardAria: "韓国金利チャート", chartAria: "韓国金利チャート。左右の矢印キーで日付を移動できます。", chartSvgAria: "韓国金利の折れ線グラフ",
+    axisUnit: "年%", emptyNoSeries: "上で系列を1つ以上オンにしてください。", emptyNoData: "選択した期間のデータがありません。",
+    tipNone: "この時点の値がありません。", noRange: "期間内データなし", chipDelta: "期間 {0}",
+    keyM: "{0}年{1}月平均", keyMPartial: "（{0}日まで）", keyY: "{0}年平均", keyYPartial: "（{0}/{1}まで）",
+    tblTitle: "データ · {0}", csv: "CSVダウンロード（全17系列）", colD: "日付", colM: "月", colY: "年",
+    noteMaxRows: "直近{0}行のみ表示しています。全件はCSVでダウンロードしてください。", notePartial: "* は期間途中の平均です（{0}まで）。",
+    capDays: "営業日 {0}日", capPartial: "最後の点（白丸）は{0}までの平均", capStep: "基準金利は階段状",
+    csvName: "korea-rates", noRatesYet: "金利データがまだありません。初回の自動収集が成功すると表示されます。",
+    freshRates: "金利 {0}月{1}日時点", freshUpd: "最終更新 {0}", freshNext: "次回自動更新 {0}頃", tomorrow: "明日 ", noFresh: "更新情報なし", kst: " KST",
+    srcSummary: "韓国の金利データの出所（聯合インフォマックス等）",
+    src1Tag: "KOFIA · 本ページの基準", src1Title: "韓国金融投資協会 最終呼値利回り",
+    src1Body: "毎営業日の取引終了後、指定された韓国の証券会社が韓国金融投資協会（KOFIA）に報告した呼値から上下の極端な値を除いて平均した利回りです。韓国国債（KTB）、通貨安定証券、産業銀行債、CD、社債の代表金利として最も広く使われ、韓国銀行ECOSの市場金利もこの値をそのまま用いています。",
+    src2Tag: "民評 · 韓国の債券評価会社4社", src2Title: "民間債券評価会社の平均",
+    src2Body: "KIS資産評価、韓国資産評価、NICE P&I、FN資産評価による時価評価利回りの平均です。韓国の銀行債・カード/キャピタル債・公社債のカーブや個別銘柄の多くはこの値です。本ページの「韓国社債 AA- 3年(民評)」がこれにあたります。",
+    src3Tag: "KRX · 取引所", src3Title: "韓国取引所 国債専門流通市場の約定",
+    src3Body: "韓国取引所で実際に約定した韓国国債指標銘柄の利回りです。日中のリアルタイム国債金利の多くはここから来ています。",
+    src4Tag: "店頭 · 約定と呼値", src4Title: "店頭取引の約定・ブローカー呼値",
+    src4Body: "KOFIAに報告される店頭債券の約定とブローカー呼値を聯合インフォマックスが集めて整理したものです。インフォマックスの加工画面は公開APIでは取得できません。",
+    h1News: "韓国金利ニュース",
+    ledeNews: "聯合インフォマックス（債券/為替・政策/金融）、聯合ニュース、韓国経済新聞、Googleニュース検索から韓国の金利関連記事を集めています。平日7〜22時（韓国時間）に毎時更新され、この画面は10分ごとに新着を確認します。記事のタイトルと要約は原文（韓国語）のまま表示します。",
+    searchPh: "タイトル・要約を検索", searchAria: "記事を検索", srcAria: "媒体", allSources: "すべての媒体", otherSources: "その他の媒体",
+    unreadOnly: "未読のみ", markAll: "すべて既読", catsAria: "分類", listAria: "記事一覧",
+    noteNews: "記事の著作権は各報道機関に帰属します。このページはタイトル、媒体がRSSで提供する要約の冒頭、原文リンクのみを表示します。既読情報はこのブラウザにのみ保存されます。ショートカット：j/k または ↑/↓ で移動、Enter で原文を開く。",
+    emptyFiltered: "条件に合う記事がありません。検索語や分類を変えてください。", emptyNone: "まだ記事がありません。",
+    today: "今日", yesterday: "昨日", justNow: "たった今",
+    readerEmpty: "左の一覧から記事を選ぶと、要約と原文リンクがここに表示されます。", viaGoogle: " · Googleニュース経由",
+    noSummary: "この媒体はRSSで要約を提供していません。原文をご覧ください。", openOriginal: "原文を開く ↗",
+    toastMarkAll: "すべての記事を既読にしました。", toastNew: "新着記事が{0}件あります。", toastLoaded: "新着記事{0}件を読み込みました。",
+    toastFresh: "最新データを読み込みました。", toastAlready: "すでに最新です。{0}", toastFail: "読み込めませんでした。しばらくしてから再度お試しください。",
+    footer1: "データ：韓国銀行 ECOS Open API 817Y002（韓国市場金利・日次）、722Y001（韓国銀行 基準金利）。ニュース：各報道機関のRSS、Googleニュース。GitHub Actionsで自動収集。",
+    footer2: "運営統計のため、アクセス記録（IP・時刻・地域・端末情報）を90日間保管した後、自動で削除します。",
+  },
+  zh: {
+    docTitle: "韩国利率监测", brand: "韩国利率监测", tabRates: "韩国利率走势", tabNews: "韩国利率新闻", navAria: "页面", langAria: "语言",
+    loading: "正在加载数据…", reload: "↻ 重新加载", reloading: "加载中…",
+    reloadTitle: "重新读取已发布的最新数据（不产生费用）。",
+    h1Rates: "韩国利率走势",
+    ledeRates: "韩国银行（ECOS）每日市场利率。债券与CD为韩国金融投资协会（KOFIA）收盘报价收益率。区间较短时显示日数据，较长时改为月均或年均。",
+    period: "期间", periodAria: "快速选择期间", p1M: "1个月", p3M: "3个月", p6M: "6个月", p1Y: "1年", p3Y: "3年", p5Y: "5年", p10Y: "10年", pALL: "全部",
+    custom: "自定义", fromAria: "开始日期", toAria: "结束日期",
+    unit: "频率", unitAria: "汇总频率", uAuto: "自动", uD: "日", uM: "月", uY: "年",
+    unitD: "日度", unitM: "月均", unitY: "年均",
+    seriesAria: "选择系列", limitMsg: "最多可同时显示8个系列，请先关闭其他系列。",
+    chartCardAria: "韩国利率图表", chartAria: "韩国利率图表。可用左右方向键移动日期。", chartSvgAria: "韩国利率折线图",
+    axisUnit: "年%", emptyNoSeries: "请在上方至少开启一个系列。", emptyNoData: "所选期间无数据。",
+    tipNone: "该时点没有已开启系列的数值。", noRange: "区间内无数据", chipDelta: "区间 {0}",
+    keyM: "{0}年{1}月均值", keyMPartial: "（截至{0}日）", keyY: "{0}年均值", keyYPartial: "（截至{0}/{1}）",
+    tblTitle: "数据 · {0}", csv: "下载CSV（全部17个系列）", colD: "日期", colM: "月份", colY: "年份",
+    noteMaxRows: "仅显示最近{0}行，完整数据请下载CSV。", notePartial: "* 表示期间尚未结束，为截至{0}的平均值。",
+    capDays: "交易日 {0}天", capPartial: "最后一点（空心圆）为截至{0}的平均", capStep: "基准利率以阶梯显示",
+    csvName: "korea-rates", noRatesYet: "暂无利率数据，首次自动收集成功后将显示图表。",
+    freshRates: "利率截至{0}月{1}日", freshUpd: "最近更新 {0}", freshNext: "下次自动更新约 {0}", tomorrow: "明天 ", noFresh: "无更新信息", kst: " KST",
+    srcSummary: "韩国利率数据从哪里来（如韩联社Infomax）",
+    src1Tag: "KOFIA · 本页采用", src1Title: "韩国金融投资协会 收盘报价收益率",
+    src1Body: "每个交易日收盘后，指定的韩国证券公司向韩国金融投资协会（KOFIA）报告报价，去掉极端值后取平均得出的收益率。它是韩国国债（KTB）、货币稳定债券、产业银行债、CD和公司债最常用的基准利率，韩国银行ECOS市场利率也直接采用该数值。",
+    src2Tag: "民评 · 韩国4家债券估值机构", src2Title: "民间债券估值机构平均",
+    src2Body: "KIS资产评价、韩国资产评价、NICE P&I、FN资产评价的市值估值收益率平均值。韩国银行债、信用卡/资本公司债、公共机构债的曲线及个券大多采用此值。本页的“韩国公司债 AA- 3年(民评)”即属此类。",
+    src3Tag: "KRX · 场内", src3Title: "韩国交易所 国债专门流通市场成交",
+    src3Body: "在韩国交易所实际成交的韩国国债基准券收益率。盘中实时国债利率大多来自这里。",
+    src4Tag: "场外 · 成交与报价", src4Title: "场外成交与经纪商报价",
+    src4Body: "由韩联社Infomax汇总整理的、报告给KOFIA的场外债券成交记录和经纪商报价。Infomax加工后的画面无法通过公开API获取。",
+    h1News: "韩国利率新闻",
+    ledeNews: "从韩联社Infomax（债券/外汇、政策/金融）、韩联社、韩国经济新闻和Google新闻搜索收集韩国利率相关文章。工作日韩国时间7–22点每小时更新，本页每10分钟检查一次新文章。文章标题与摘要以韩文原文显示。",
+    searchPh: "搜索标题与摘要", searchAria: "搜索文章", srcAria: "媒体", allSources: "全部媒体", otherSources: "其他媒体",
+    unreadOnly: "仅未读", markAll: "全部标为已读", catsAria: "分类", listAria: "文章列表",
+    noteNews: "文章版权归各媒体所有。本页仅显示标题、媒体RSS提供的摘要开头和原文链接。已读记录仅保存在本浏览器。快捷键：j/k 或 ↑/↓ 移动，Enter 打开原文。",
+    emptyFiltered: "没有符合条件的文章，请更换关键词或分类。", emptyNone: "尚未收集到文章。",
+    today: "今天", yesterday: "昨天", justNow: "刚刚",
+    readerEmpty: "在左侧列表选择文章后，这里会显示摘要和原文链接。", viaGoogle: " · 来自Google新闻",
+    noSummary: "该媒体的RSS不提供摘要，请查看原文。", openOriginal: "打开原文 ↗",
+    toastMarkAll: "已将所有文章标为已读。", toastNew: "新增{0}篇文章。", toastLoaded: "已加载{0}篇新文章。",
+    toastFresh: "已加载最新数据。", toastAlready: "已是最新。{0}", toastFail: "加载失败，请稍后重试。",
+    footer1: "数据：韩国银行 ECOS Open API 817Y002（韩国市场利率·日度）、722Y001（韩国银行基准利率）。新闻：各媒体RSS、Google新闻。通过GitHub Actions自动收集。",
+    footer2: "为运营统计，访问记录（IP、访问时间、地区、设备信息）保存90天后自动删除。",
+  },
+};
+// 계열 묶음 이름
+const GROUP_NAME = {
+  policy: { ko: "정책·단기", en: "Korea policy & short-term", ja: "韓国 政策・短期", zh: "韩国 政策与短期" },
+  ktb: { ko: "국고채", en: "Korea Treasury Bonds (KTB)", ja: "韓国国債", zh: "韩国国债" },
+  credit: { ko: "크레딧", en: "Korea credit", ja: "韓国クレジット", zh: "韩国信用债" },
+};
+// 뉴스 분류(데이터에는 한국어 값이 저장돼 있고, 화면에서만 바꿔 보여준다)
+const CAT_NAME = {
+  "전체": { en: "All", ja: "すべて", zh: "全部" },
+  "통화정책": { en: "BOK policy", ja: "韓国の金融政策", zh: "韩国货币政策" },
+  "국고채·시장": { en: "KTB & market", ja: "韓国国債・市場", zh: "韩国国债·市场" },
+  "크레딧": { en: "Korea credit", ja: "韓国クレジット", zh: "韩国信用债" },
+  "단기금융": { en: "Korea money market", ja: "韓国短期金融", zh: "韩国短期金融" },
+  "해외금리": { en: "Global rates", ja: "海外金利", zh: "海外利率" },
+  "예금·대출": { en: "Korea deposits & loans", ja: "韓国の預金・貸出", zh: "韩国存贷款" },
+  "기타": { en: "Other", ja: "その他", zh: "其他" },
+};
+// 주요 매체 이름
+const SOURCE_NAME = {
+  "연합인포맥스": { en: "Yonhap Infomax", ja: "聯合インフォマックス", zh: "韩联社Infomax" },
+  "연합뉴스": { en: "Yonhap News", ja: "聯合ニュース", zh: "韩联社" },
+  "한국경제": { en: "Korea Economic Daily", ja: "韓国経済新聞", zh: "韩国经济新闻" },
+  "Google 뉴스": { en: "Google News", ja: "Googleニュース", zh: "Google新闻" },
+};
+
+function pickLang() {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (LANGS.includes(q)) return q;
+  const saved = store.get("lang", null);
+  if (LANGS.includes(saved)) return saved;
+  const nav = (navigator.language || "ko").slice(0, 2).toLowerCase();
+  return LANGS.includes(nav) ? nav : "ko";
+}
+let LANG = pickLang();
+function t(key, ...args) {
+  const s = (I18N[LANG] && I18N[LANG][key]) ?? I18N.ko[key] ?? key;
+  return s.replace(/\{(\d)\}/g, (_, i) => args[+i] ?? "");
+}
+const catName = c => (LANG === "ko" ? c : (CAT_NAME[c] && CAT_NAME[c][LANG]) || c);
+const srcName = s => (LANG === "ko" ? s : (SOURCE_NAME[s] && SOURCE_NAME[s][LANG]) || s);
+
+// data-i18n(본문), data-i18n-ph(placeholder), data-i18n-title, data-i18n-aria(aria-label)
+function applyStatic() {
+  document.documentElement.lang = LANG;
+  document.title = t("docTitle");
+  document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(e => { e.placeholder = t(e.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-title]").forEach(e => { e.title = t(e.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-aria]").forEach(e => { e.setAttribute("aria-label", t(e.dataset.i18nAria)); });
+  $("lang").value = LANG;
+}
 async function getText(path) {
   const r = await fetch(path + "?t=" + Date.now(), { cache: "no-store" });
   if (!r.ok) throw new Error(path + " " + r.status);
   return r.text();
 }
 const KST_FMT = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, weekday: "short" });
+const WD_FMT = {};
 function kstParts(ms) {
   const o = {};
   for (const p of KST_FMT.formatToParts(new Date(ms))) o[p.type] = p.value;
-  return o; // year month day hour minute weekday
+  WD_FMT[LANG] = WD_FMT[LANG] || new Intl.DateTimeFormat(LOCALE[LANG], { timeZone: "Asia/Seoul", weekday: "short" });
+  o.weekday = WD_FMT[LANG].format(new Date(ms));
+  return o; // year month day hour minute weekday(현재 언어)
 }
 function toast(msg) {
   const t = $("toast");
@@ -564,15 +813,15 @@ function renderFresh() {
   const parts = [];
   if (META.rates_last_date) {
     const d = META.rates_last_date;
-    parts.push(`금리 ${+d.slice(4, 6)}월 ${+d.slice(6, 8)}일 기준`);
+    parts.push(t("freshRates", +d.slice(4, 6), +d.slice(6, 8)));
   }
   if (META.news_updated) {
     const p = kstParts(Date.parse(META.news_updated));
-    parts.push(`마지막 갱신 ${p.month}/${p.day} ${p.hour}:${p.minute}`);
+    parts.push(t("freshUpd", `${p.month}/${p.day} ${p.hour}:${p.minute}${t("kst")}`));
   }
   const next = nextRunLabel();
   if (next) parts.push(next);
-  $("fresh").textContent = parts.join(" · ") || "갱신 정보 없음";
+  $("fresh").textContent = parts.join(" · ") || t("noFresh");
 }
 
 // Cloudflare Worker(worker/) 예약 실행과 같은 규칙: 평일 07~22시 매시 5분, 주말 10·18시 5분(KST).
@@ -587,13 +836,12 @@ function nextRunMs(now = Date.now()) {
   return null;
 }
 function nextRunLabel() {
-  const t = nextRunMs();
-  if (!t) return "";
+  const ms = nextRunMs();
+  if (!ms) return "";
   const ymd = o => o.year + o.month + o.day;
-  const p = kstParts(t);
-  const day = ymd(p) === ymd(kstParts(Date.now())) ? "" : ymd(p) === ymd(kstParts(Date.now() + 864e5)) ? "내일 " : `${p.weekday} `;
-  // GitHub 예약 실행은 보통 정각보다 몇 분~20분 늦게 돈다.
-  return `다음 자동 갱신 ${day}${p.hour}:${p.minute} 무렵`;
+  const p = kstParts(ms);
+  const day = ymd(p) === ymd(kstParts(Date.now())) ? "" : ymd(p) === ymd(kstParts(Date.now() + 864e5)) ? t("tomorrow").trim() + " " : `${p.weekday} `;
+  return t("freshNext", `${day}${p.hour}:${p.minute}${t("kst")}`);
 }
 
 // ---------------------------------------------------------------- routing
@@ -609,25 +857,26 @@ window.addEventListener("hashchange", route);
 
 // ================================================================ PAGE 1
 const SERIES = [
-  { k: "base", n: "기준금리", g: "정책·단기" },
-  { k: "call", n: "콜금리 1일", g: "정책·단기" },
-  { k: "cd91", n: "CD 91일", g: "정책·단기" },
-  { k: "cp91", n: "CP 91일", g: "정책·단기" },
-  { k: "msb1", n: "통안 1년", g: "정책·단기" },
-  { k: "msb2", n: "통안 2년", g: "정책·단기" },
-  { k: "ktb1", n: "국고채 1년", g: "국고채" },
-  { k: "ktb2", n: "국고채 2년", g: "국고채" },
-  { k: "ktb3", n: "국고채 3년", g: "국고채" },
-  { k: "ktb5", n: "국고채 5년", g: "국고채" },
-  { k: "ktb10", n: "국고채 10년", g: "국고채" },
-  { k: "ktb20", n: "국고채 20년", g: "국고채" },
-  { k: "ktb30", n: "국고채 30년", g: "국고채" },
-  { k: "kdb1", n: "산금채 1년", g: "크레딧" },
-  { k: "aa3", n: "회사채 AA- 3년", g: "크레딧" },
-  { k: "aa3m", n: "AA- 3년 민평", g: "크레딧" },
-  { k: "bbb3", n: "회사채 BBB- 3년", g: "크레딧" },
+  { k: "base", g: "policy", n: { ko: "기준금리", en: "BOK Base Rate", ja: "韓国銀行 基準金利", zh: "韩国央行基准利率" } },
+  { k: "call", g: "policy", n: { ko: "콜금리 1일", en: "Korea Call Rate 1D", ja: "韓国コール 翌日物", zh: "韩国隔夜拆借利率" } },
+  { k: "cd91", g: "policy", n: { ko: "CD 91일", en: "Korea CD 91D", ja: "韓国CD 91日", zh: "韩国CD 91天" } },
+  { k: "cp91", g: "policy", n: { ko: "CP 91일", en: "Korea CP 91D", ja: "韓国CP 91日", zh: "韩国CP 91天" } },
+  { k: "msb1", g: "policy", n: { ko: "통안 1년", en: "Korea MSB 1Y", ja: "韓国通貨安定証券 1年", zh: "韩国货币稳定债 1年" } },
+  { k: "msb2", g: "policy", n: { ko: "통안 2년", en: "Korea MSB 2Y", ja: "韓国通貨安定証券 2年", zh: "韩国货币稳定债 2年" } },
+  { k: "ktb1", g: "ktb", n: { ko: "국고채 1년", en: "Korea Treasury 1Y", ja: "韓国国債 1年", zh: "韩国国债 1年" } },
+  { k: "ktb2", g: "ktb", n: { ko: "국고채 2년", en: "Korea Treasury 2Y", ja: "韓国国債 2年", zh: "韩国国债 2年" } },
+  { k: "ktb3", g: "ktb", n: { ko: "국고채 3년", en: "Korea Treasury 3Y", ja: "韓国国債 3年", zh: "韩国国债 3年" } },
+  { k: "ktb5", g: "ktb", n: { ko: "국고채 5년", en: "Korea Treasury 5Y", ja: "韓国国債 5年", zh: "韩国国债 5年" } },
+  { k: "ktb10", g: "ktb", n: { ko: "국고채 10년", en: "Korea Treasury 10Y", ja: "韓国国債 10年", zh: "韩国国债 10年" } },
+  { k: "ktb20", g: "ktb", n: { ko: "국고채 20년", en: "Korea Treasury 20Y", ja: "韓国国債 20年", zh: "韩国国债 20年" } },
+  { k: "ktb30", g: "ktb", n: { ko: "국고채 30년", en: "Korea Treasury 30Y", ja: "韓国国債 30年", zh: "韩国国债 30年" } },
+  { k: "kdb1", g: "credit", n: { ko: "산금채 1년", en: "Korea KDB Bond 1Y", ja: "韓国産業銀行債 1年", zh: "韩国产业银行债 1年" } },
+  { k: "aa3", g: "credit", n: { ko: "회사채 AA- 3년", en: "Korea Corp. AA- 3Y", ja: "韓国社債 AA- 3年", zh: "韩国公司债 AA- 3年" } },
+  { k: "aa3m", g: "credit", n: { ko: "AA- 3년 민평", en: "Korea Corp. AA- 3Y (pricing avg.)", ja: "韓国社債 AA- 3年(民評)", zh: "韩国公司债 AA- 3年(民评)" } },
+  { k: "bbb3", g: "credit", n: { ko: "회사채 BBB- 3년", en: "Korea Corp. BBB- 3Y", ja: "韓国社債 BBB- 3年", zh: "韩国公司债 BBB- 3年" } },
 ];
 const BY_KEY = Object.fromEntries(SERIES.map(s => [s.k, s]));
+const sname = s => s.n[LANG] || s.n.ko;
 const SLOTS = 8;
 // 처음 켜지는 8개와 색 순서. 색은 켤 때 빈 슬롯을 받고, 끌 때까지 바뀌지 않는다.
 const DEFAULT_ON = ["ktb3", "ktb10", "kdb1", "cd91", "ktb30", "aa3", "ktb5", "base"];
@@ -729,11 +978,12 @@ function computeView() {
 
 function keyLabel(key, unit, partial, lastDate) {
   if (unit === "D") {
-    const wd = "일월화수목금토"[new Date(Date.UTC(+key.slice(0, 4), +key.slice(4, 6) - 1, +key.slice(6, 8))).getUTCDay()];
+    const wd = new Intl.DateTimeFormat(LOCALE[LANG], { timeZone: "UTC", weekday: "short" })
+      .format(new Date(Date.UTC(+key.slice(0, 4), +key.slice(4, 6) - 1, +key.slice(6, 8))));
     return `${iso(key)} (${wd})`;
   }
-  if (unit === "M") return `${key.slice(0, 4)}년 ${+key.slice(4, 6)}월 평균` + (partial ? ` (${+lastDate.slice(6, 8)}일까지)` : "");
-  return `${key}년 평균` + (partial ? ` (${+lastDate.slice(4, 6)}/${+lastDate.slice(6, 8)}까지)` : "");
+  if (unit === "M") return t("keyM", key.slice(0, 4), +key.slice(4, 6)) + (partial ? t("keyMPartial", +lastDate.slice(6, 8)) : "");
+  return t("keyY", key) + (partial ? t("keyYPartial", +lastDate.slice(4, 6), +lastDate.slice(6, 8)) : "");
 }
 
 // ---------- chips
@@ -743,13 +993,13 @@ function buildChips() {
   const groups = [...new Set(SERIES.map(s => s.g))];
   for (const g of groups) {
     const row = document.createElement("div"); row.className = "group";
-    const name = document.createElement("div"); name.className = "group-name"; name.textContent = g;
+    const name = document.createElement("div"); name.className = "group-name"; name.textContent = GROUP_NAME[g][LANG];
     const chips = document.createElement("div"); chips.className = "chips";
     for (const s of SERIES.filter(x => x.g === g)) {
       const b = document.createElement("button");
       b.type = "button"; b.className = "chip"; b.id = "chip-" + s.k; b.dataset.k = s.k;
       const key = document.createElement("span"); key.className = "key";
-      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = s.n;
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = sname(s);
       const sub = document.createElement("span"); sub.className = "sub";
       b.append(key, nm, sub);
       b.addEventListener("click", () => toggleSeries(s.k));
@@ -782,10 +1032,10 @@ function updateChips(V) {
     for (let i = V.i1; i >= V.i0; i--) if (!Number.isNaN(col[i])) { last = col[i]; break; }
     const sub = b.querySelector(".sub");
     sub.textContent = "";
-    if (Number.isNaN(last)) { sub.textContent = "기간 내 자료 없음"; continue; }
+    if (Number.isNaN(last)) { sub.textContent = t("noRange"); continue; }
     const v = document.createElement("b"); v.textContent = fmt(last) + "%";
     const bp = Math.round((last - first) * 100);
-    sub.append(v, document.createTextNode(` 기간 ${bp > 0 ? "▲" : bp < 0 ? "▼" : ""}${Math.abs(bp)}bp`));
+    sub.append(v, document.createTextNode(" " + t("chipDelta", `${bp > 0 ? "▲" : bp < 0 ? "▼" : ""}${Math.abs(bp)}bp`)));
   }
 }
 
@@ -848,19 +1098,21 @@ function drawChart(V) {
   const W = Math.max(chartEl.clientWidth, 280);
   const narrow = W < 640;
   const H = narrow ? 320 : 440;
-  const m = { t: 24, r: narrow ? 12 : 116, b: 30, l: 44 };
   const active = SERIES.filter(s => s.k in R.slot).sort((a, b) => R.slot[a.k] - R.slot[b.k]);
+  // 오른쪽 끝 이름표 자리: 켜진 계열 이름 중 가장 긴 것에 맞춘다(언어마다 길이가 다름).
+  const labelW = active.reduce((w, s) => Math.max(w, textWidth(sname(s))), 0);
+  const m = { t: 24, r: narrow ? 12 : Math.min(260, Math.max(80, labelW + 32)), b: 30, l: 44 };
   const n = V.keys.length;
   chartEl.textContent = "";
-  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": "기간별 금리 선 그래프" }, chartEl);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": t("chartSvgAria") }, chartEl);
   chartEl.appendChild(tip);
   tip.hidden = true;
 
   let lo = Infinity, hi = -Infinity;
   for (const s of active) for (const v of V.vals[s.k]) if (!Number.isNaN(v)) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
   if (!n || !active.length || lo === Infinity) {
-    const t = el("text", { x: W / 2, y: H / 2, "text-anchor": "middle", class: "empty-text" }, svg);
-    t.textContent = !active.length ? "위에서 계열을 하나 이상 켜주세요." : "선택한 기간에 자료가 없습니다.";
+    const tx = el("text", { x: W / 2, y: H / 2, "text-anchor": "middle", class: "empty-text" }, svg);
+    tx.textContent = !active.length ? t("emptyNoSeries") : t("emptyNoData");
     G = null;
     return;
   }
@@ -871,13 +1123,13 @@ function drawChart(V) {
   const y = v => m.t + (d.hi - v) / (d.hi - d.lo) * ph;
 
   const g = el("g", {}, svg);
-  for (const t of d.ticks) {
-    el("line", { x1: m.l, x2: m.l + pw, y1: y(t), y2: y(t), stroke: t === d.lo ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }, g);
-    const tx = el("text", { x: m.l - 8, y: y(t) + 4, "text-anchor": "end", class: "axis-text" }, g);
-    tx.textContent = d.step < 0.1 ? t.toFixed(2) : d.step < 1 ? t.toFixed(d.step === 0.25 ? 2 : 1) : t.toFixed(0);
+  for (const tk of d.ticks) {
+    el("line", { x1: m.l, x2: m.l + pw, y1: y(tk), y2: y(tk), stroke: tk === d.lo ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }, g);
+    const tx = el("text", { x: m.l - 8, y: y(tk) + 4, "text-anchor": "end", class: "axis-text" }, g);
+    tx.textContent = d.step < 0.1 ? tk.toFixed(2) : d.step < 1 ? tk.toFixed(d.step === 0.25 ? 2 : 1) : tk.toFixed(0);
   }
   const unitT = el("text", { x: m.l - 8, y: m.t - 10, "text-anchor": "end", class: "axis-text" }, g);
-  unitT.textContent = "연%";
+  unitT.textContent = t("axisUnit");
   const ticks = xTickIndices(V.keys, V.unit, per || 1);
   for (const i of ticks.idx) {
     el("line", { x1: x(i), x2: x(i), y1: m.t + ph, y2: m.t + ph + 4, stroke: "var(--axis)" }, g);
@@ -932,8 +1184,8 @@ function drawChart(V) {
     const x0 = x(lastIdx);
     for (const it of items) {
       el("path", { d: `M${x0 + 7},${it.y0}L${x0 + 14},${it.y}L${x0 + 19},${it.y}`, fill: "none", stroke: "var(--axis)", "stroke-width": 1 }, lg);
-      const t = el("text", { x: x0 + 23, y: it.y + 4, class: "end-text" }, lg);
-      t.textContent = it.s.n;
+      const tx = el("text", { x: x0 + 23, y: it.y + 4, class: "end-text" }, lg);
+      tx.textContent = sname(it.s);
     }
   }
 
@@ -971,11 +1223,11 @@ function setHover(i) {
     const row = document.createElement("div"); row.className = "tip-row";
     const k = document.createElement("span"); k.className = "k"; k.style.background = color(r.s.k);
     const b = document.createElement("b"); b.textContent = fmt(r.v);
-    const nm = document.createElement("span"); nm.textContent = r.s.n;
+    const nm = document.createElement("span"); nm.textContent = sname(r.s);
     row.append(k, b, nm);
     tip.appendChild(row);
   }
-  if (!rows.length) { const e = document.createElement("div"); e.textContent = "이 시점에 켜진 계열 값이 없습니다."; tip.appendChild(e); }
+  if (!rows.length) { const e = document.createElement("div"); e.textContent = t("tipNone"); tip.appendChild(e); }
   tip.hidden = false;
   const scale = chartEl.clientWidth / G.W;
   const tw = tip.offsetWidth;
@@ -996,21 +1248,28 @@ chartEl.addEventListener("focus", () => { if (R.hover === null && G) setHover(G.
 chartEl.addEventListener("blur", () => setHover(null));
 
 // ---------- table + csv
-const UNIT_NAME = { D: "일별", M: "월평균", Y: "연평균" };
+const unitName = u => t("unit" + u);
+const colName = u => t("col" + u);
+let TW_CTX = null;
+function textWidth(str) {
+  TW_CTX = TW_CTX || document.createElement("canvas").getContext("2d");
+  TW_CTX.font = '11.5px "IBM Plex Sans KR", "Malgun Gothic", system-ui, sans-serif';
+  return TW_CTX.measureText(str).width;
+}
 function drawTable(V) {
-  const t = $("tbl");
-  t.textContent = "";
+  const tbl = $("tbl");
+  tbl.textContent = "";
   const active = SERIES.filter(s => s.k in R.slot).sort((a, b) => R.slot[a.k] - R.slot[b.k]);
-  $("tbl-title").textContent = `기간 데이터 · ${UNIT_NAME[V.unit]}`;
-  const hr = t.createTHead().insertRow();
-  const h0 = document.createElement("th"); h0.textContent = V.unit === "D" ? "날짜" : V.unit === "M" ? "월" : "연도"; hr.appendChild(h0);
+  $("tbl-title").textContent = t("tblTitle", unitName(V.unit));
+  const hr = tbl.createTHead().insertRow();
+  const h0 = document.createElement("th"); h0.textContent = colName(V.unit); hr.appendChild(h0);
   for (const s of active) {
     const th = document.createElement("th");
     const k = document.createElement("span"); k.className = "hk"; k.style.background = color(s.k);
-    th.append(k, document.createTextNode(s.n));
+    th.append(k, document.createTextNode(sname(s)));
     hr.appendChild(th);
   }
-  const tb = t.createTBody();
+  const tb = tbl.createTBody();
   const MAX = 500;
   const n = V.keys.length;
   for (let b = n - 1; b >= Math.max(0, n - MAX); b--) {
@@ -1029,13 +1288,13 @@ function drawTable(V) {
     }
   }
   const notes = [];
-  if (n > MAX) notes.push(`최근 ${MAX}행만 표시했습니다. 전체는 CSV로 받으세요.`);
-  if (V.partialLast) notes.push(`* 표시는 아직 끝나지 않은 기간의 평균(${iso(V.lastDateOfKey[n - 1])}까지)입니다.`);
+  if (n > MAX) notes.push(t("noteMaxRows", MAX));
+  if (V.partialLast) notes.push(t("notePartial", iso(V.lastDateOfKey[n - 1])));
   $("tbl-note").textContent = notes.join(" ");
 }
 $("csv").addEventListener("click", () => {
   const V = computeView();
-  const head = [V.unit === "D" ? "날짜" : V.unit === "M" ? "월" : "연도", ...SERIES.map(s => s.n)];
+  const head = [colName(V.unit), ...SERIES.map(s => `"${sname(s)}"`)];
   const lines = [head.join(",")];
   V.keys.forEach((k, b) => {
     const label = V.unit === "D" ? iso(k) : V.unit === "M" ? `${k.slice(0, 4)}-${k.slice(4, 6)}` : k;
@@ -1044,7 +1303,8 @@ $("csv").addEventListener("click", () => {
   const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `금리_${UNIT_NAME[V.unit]}_${R.from}_${R.to}.csv`;
+  const slug = LANG === "ko" ? unitName(V.unit) : { D: "daily", M: "monthly", Y: "yearly" }[V.unit];
+  a.download = `${t("csvName")}_${slug}_${R.from}_${R.to}.csv`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 });
@@ -1070,14 +1330,14 @@ function renderRates() {
   document.querySelectorAll("#units button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.u === R.unit)));
   $("d-from").value = R.from; $("d-to").value = R.to;
   const V = computeView();
-  $("unit-hint").textContent = R.unit === "auto" ? `→ ${UNIT_NAME[V.unit]}` : "";
+  $("unit-hint").textContent = R.unit === "auto" ? `→ ${unitName(V.unit)}` : "";
   updateChips(V);
   drawChart(V);
   drawTable(V);
   const days = V.i1 - V.i0 + 1;
-  let cap = `${UNIT_NAME[V.unit]} · ${R.from.replaceAll("-", ".")} – ${R.to.replaceAll("-", ".")} · 영업일 ${days.toLocaleString("ko-KR")}일`;
-  if (V.partialLast) cap += ` · 마지막 점(빈 원)은 ${iso(V.lastDateOfKey[V.keys.length - 1])}까지의 평균`;
-  if ("base" in R.slot && V.unit === "D") cap += " · 기준금리는 계단형";
+  let cap = `${unitName(V.unit)} · ${R.from.replaceAll("-", ".")} – ${R.to.replaceAll("-", ".")} · ${t("capDays", days.toLocaleString(LOCALE[LANG]))}`;
+  if (V.partialLast) cap += " · " + t("capPartial", iso(V.lastDateOfKey[V.keys.length - 1]));
+  if ("base" in R.slot && V.unit === "D") cap += " · " + t("capStep");
   $("caption").textContent = cap;
 }
 if ("ResizeObserver" in window) {
@@ -1111,18 +1371,19 @@ function markRead(id) {
 }
 function relTime(ms) {
   const diff = (Date.now() - ms) / 60000;
-  if (diff < 1) return "방금";
-  if (diff < 60) return `${Math.floor(diff)}분 전`;
-  if (diff < 24 * 60) return `${Math.floor(diff / 60)}시간 전`;
+  if (diff < 1) return t("justNow");
+  const rtf = new Intl.RelativeTimeFormat(LOCALE[LANG], { numeric: "always", style: "short" });
+  if (diff < 60) return rtf.format(-Math.floor(diff), "minute");
+  if (diff < 24 * 60) return rtf.format(-Math.floor(diff / 60), "hour");
   const p = kstParts(ms);
   return `${p.month}/${p.day} ${p.hour}:${p.minute}`;
 }
 function dayLabel(ms) {
   const p = kstParts(ms), today = kstParts(Date.now()), yest = kstParts(Date.now() - 864e5);
   const ymd = o => o.year + o.month + o.day;
-  const base = `${+p.month}월 ${+p.day}일 (${p.weekday})`;
-  if (ymd(p) === ymd(today)) return ["오늘", base];
-  if (ymd(p) === ymd(yest)) return ["어제", base];
+  const base = new Intl.DateTimeFormat(LOCALE[LANG], { timeZone: "Asia/Seoul", month: "short", day: "numeric", weekday: "short" }).format(new Date(ms));
+  if (ymd(p) === ymd(today)) return [t("today"), base];
+  if (ymd(p) === ymd(yest)) return [t("yesterday"), base];
   return [base, ""];
 }
 function srcGroup(s) { return MAJOR_SOURCES.includes(s) ? s : "그 밖의 매체"; }
@@ -1146,7 +1407,7 @@ function buildNewsControls() {
     const b = document.createElement("button");
     b.type = "button"; b.className = "cat"; b.id = "cat-" + CATS.indexOf(c);
     b.setAttribute("aria-pressed", String(N.cat === c));
-    b.append(document.createTextNode(c));
+    b.append(document.createTextNode(catName(c)));
     const n = document.createElement("span"); n.className = "n"; n.textContent = counts[c] || 0;
     b.appendChild(n);
     b.addEventListener("click", () => { N.cat = c; buildNewsControls(); renderNews(); });
@@ -1155,7 +1416,7 @@ function buildNewsControls() {
   const sel = $("src");
   const cur = N.src;
   sel.textContent = "";
-  const opts = [["all", "모든 매체"], ...MAJOR_SOURCES.map(s => [s, s]), ["그 밖의 매체", "그 밖의 매체"]];
+  const opts = [["all", t("allSources")], ...MAJOR_SOURCES.map(s => [s, srcName(s)]), ["그 밖의 매체", t("otherSources")]];
   for (const [v, label] of opts) {
     const o = document.createElement("option"); o.value = v; o.textContent = label;
     if (v === cur) o.selected = true;
@@ -1179,7 +1440,7 @@ function renderNews() {
   const items = filtered();
   if (!items.length) {
     const e = document.createElement("div"); e.className = "list-empty";
-    e.textContent = NEWS.length ? "조건에 맞는 기사가 없습니다. 검색어나 분류를 바꿔보세요." : "아직 수집된 기사가 없습니다.";
+    e.textContent = NEWS.length ? t("emptyFiltered") : t("emptyNone");
     list.appendChild(e);
   }
   let lastDay = null;
@@ -1201,12 +1462,12 @@ function renderNews() {
     row.setAttribute("aria-selected", String(N.sel === it.id));
     const dot = document.createElement("span"); dot.className = "dot";
     const meta = document.createElement("div"); meta.className = "meta";
-    const s = document.createElement("span"); s.className = "s"; s.textContent = it.s;
+    const s = document.createElement("span"); s.className = "s"; s.textContent = srcName(it.s);
     const tm = document.createElement("span"); tm.textContent = relTime(ms);
     meta.append(s, document.createTextNode("·"), tm);
-    const t = document.createElement("div"); t.className = "t"; t.textContent = it.t;
-    const tg = document.createElement("div"); tg.className = "tg"; tg.textContent = it.g.join(" · ");
-    row.append(dot, meta, t, tg);
+    const ti = document.createElement("div"); ti.className = "t"; ti.textContent = it.t;
+    const tg = document.createElement("div"); tg.className = "tg"; tg.textContent = it.g.map(catName).join(" · ");
+    row.append(dot, meta, ti, tg);
     row.addEventListener("click", () => selectItem(it.id, true));
     list.appendChild(row);
   }
@@ -1233,22 +1494,22 @@ function renderReader() {
   const it = NEWS.find(x => x.id === N.sel);
   if (!it) {
     const e = document.createElement("div"); e.className = "reader-empty";
-    e.textContent = "왼쪽 목록에서 기사를 고르면 요약과 원문 링크가 여기에 나옵니다.";
+    e.textContent = t("readerEmpty");
     r.appendChild(e);
     return;
   }
   const tags = document.createElement("div"); tags.className = "tags";
-  for (const g of it.g) { const p = document.createElement("span"); p.className = "pill"; p.textContent = g; tags.appendChild(p); }
+  for (const g of it.g) { const p = document.createElement("span"); p.className = "pill"; p.textContent = catName(g); tags.appendChild(p); }
   const h = document.createElement("h2"); h.textContent = it.t;
   const p = kstParts(Date.parse(it.p));
   const by = document.createElement("div"); by.className = "byline";
-  by.textContent = `${it.s} · ${p.year}-${p.month}-${p.day} (${p.weekday}) ${p.hour}:${p.minute}` + (it.v === "google" ? " · Google 뉴스 경유" : "");
+  by.textContent = `${srcName(it.s)} · ${p.year}-${p.month}-${p.day} (${p.weekday}) ${p.hour}:${p.minute}${t("kst")}` + (it.v === "google" ? t("viaGoogle") : "");
   const sm = document.createElement("p");
   sm.className = "summary" + (it.d ? "" : " none");
-  sm.textContent = it.d || "이 매체는 RSS로 요약을 제공하지 않습니다. 원문에서 확인하세요.";
+  sm.textContent = it.d || t("noSummary");
   const act = document.createElement("div"); act.className = "actions";
   const a = document.createElement("a"); a.className = "btn primary"; a.href = it.u; a.target = "_blank"; a.rel = "noopener";
-  a.textContent = "원문 열기 ↗";
+  a.textContent = t("openOriginal");
   act.appendChild(a);
   r.append(tags, h, by, sm, act);
 }
@@ -1260,7 +1521,7 @@ $("mark-all").addEventListener("click", () => {
   watermark = Date.now(); store.set("wm", watermark);
   readSet.clear(); store.set("read", []);
   renderNews();
-  toast("모든 기사를 읽음으로 표시했습니다.");
+  toast(t("toastMarkAll"));
 });
 document.addEventListener("keydown", e => {
   if ($("page-news").hidden || e.target.matches("input, select, textarea")) return;
@@ -1286,13 +1547,14 @@ async function loadMeta() {
   renderFresh();
 }
 async function boot() {
+  applyStatic();
   buildChips();
   await loadMeta();
   const results = await Promise.allSettled([loadRates(), loadNews()]);
   if (results[0].status === "rejected") {
     const msg = document.createElement("p");
     msg.className = "list-empty";
-    msg.textContent = "금리 자료가 아직 없습니다. 자동 수집이 처음 성공하면 여기에 그래프가 나옵니다.";
+    msg.textContent = t("noRatesYet");
     chartEl.appendChild(msg);
     $("caption").textContent = "";
   }
@@ -1311,7 +1573,7 @@ async function refresh(force) {
     try {
       added = await loadNews();
       renderNews();
-      if (added && !force) toast(`새 기사 ${added}건이 들어왔습니다.`);
+      if (added && !force) toast(t("toastNew", added));
     } catch { /* 다음 주기에 다시 */ }
   }
   return { changed, added };
@@ -1319,17 +1581,30 @@ async function refresh(force) {
 $("reload").addEventListener("click", async () => {
   const b = $("reload");
   b.disabled = true;
-  b.textContent = "불러오는 중…";
+  b.textContent = t("reloading");
   try {
     const { changed, added } = await refresh(true);
-    toast(added ? `새 기사 ${added}건을 불러왔습니다.`
-      : changed ? "최신 데이터를 불러왔습니다."
-      : `이미 최신입니다. ${nextRunLabel()}`);
+    toast(added ? t("toastLoaded", added) : changed ? t("toastFresh") : t("toastAlready", nextRunLabel()));
   } catch {
-    toast("불러오지 못했습니다. 잠시 후 다시 눌러주세요.");
+    toast(t("toastFail"));
   } finally {
-    setTimeout(() => { b.disabled = false; b.textContent = "↻ 다시 불러오기"; }, 3000);
+    setTimeout(() => { b.disabled = false; b.textContent = t("reload"); }, 3000);
   }
+});
+
+// 언어 바꾸기: 고른 언어는 이 브라우저에 기억하고, 주소에도 ?lang= 으로 남겨 공유할 수 있게 한다.
+$("lang").addEventListener("change", e => {
+  LANG = LANGS.includes(e.target.value) ? e.target.value : "ko";
+  store.set("lang", LANG);
+  const u = new URL(location.href);
+  if (LANG === "ko") u.searchParams.delete("lang"); else u.searchParams.set("lang", LANG);
+  history.replaceState(null, "", u);
+  applyStatic();
+  buildChips();
+  renderFresh();
+  if (NEWS.length) buildNewsControls();
+  renderRates();
+  renderNews();
 });
 boot();
 </script>
