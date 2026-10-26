@@ -7,9 +7,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="국고채·산금채·회사채·CD·기준금리 일별 추이와 금리 뉴스 인박스. 매일 자동 갱신.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M6 22 L12 15 L17 18 L26 9' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fx-monitor.pages.dev/fonts/pretendard/pretendardvariable-dynamic-subset.css">
 <style>
 /* Layout: sticky top bar with two tabs. Page 1 = controls → series chips → chart card → period table.
    Page 2 = filter row → two-pane inbox (scrolling list | reading pane), single list on phones. */
@@ -28,8 +26,8 @@
   --accent-ink: #ffffff;
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
   --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
-  --f-body: "IBM Plex Sans KR", system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, "Malgun Gothic", monospace;
+  --f-body: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --top-h: 56px;
   color-scheme: light;
 }
@@ -55,6 +53,7 @@ body {
   font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
 }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -419,7 +418,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 </head>
 <body>
 <style>
-.sitebar{background:#16181d;font-family:'IBM Plex Sans KR','Pretendard','Malgun Gothic',system-ui,sans-serif;font-size:13px;line-height:1.4}
+.sitebar{background:#16181d;font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',system-ui,sans-serif;font-size:13px;line-height:1.4}
 .sitebar-in{max-width:1180px;margin:0 auto;padding:6px 16px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 .sitebar a{color:#c9ced8;text-decoration:none;padding:4px 12px;border-radius:999px;font-weight:500}
 .sitebar a:hover{color:#fff}
@@ -1278,7 +1277,7 @@ const colName = u => t("col" + u);
 let TW_CTX = null;
 function textWidth(str) {
   TW_CTX = TW_CTX || document.createElement("canvas").getContext("2d");
-  TW_CTX.font = '11.5px "IBM Plex Sans KR", "Malgun Gothic", system-ui, sans-serif';
+  TW_CTX.font = '11.5px "Pretendard Variable", Pretendard, "Malgun Gothic", system-ui, sans-serif';
   return TW_CTX.measureText(str).width;
 }
 function drawTable(V) {
@@ -1369,6 +1368,8 @@ if ("ResizeObserver" in window) {
   let lastW = 0;
   new ResizeObserver(() => { const w = chartEl.clientWidth; if (Math.abs(w - lastW) > 1) { lastW = w; renderRates(); } }).observe(chartEl);
 } else window.addEventListener("resize", renderRates);
+// 글꼴(Pretendard)이 늦게 도착하면 라벨 폭을 다시 재서 그린다
+if (document.fonts && document.fonts.addEventListener) { let ft = 0; document.fonts.addEventListener("loadingdone", () => { clearTimeout(ft); ft = setTimeout(() => { try { renderRates(); } catch (e) {} }, 150); }); }
 
 async function loadRates() {
   D = parseCSV(await getText("data/rates.csv"));
