@@ -46,7 +46,10 @@ jobs:
           ECOS_KEY_SOURCES: "secret=${{ secrets.ECOS_API_KEY != '' }}, variable=${{ vars.ECOS_API_KEY != '' }}"
         run: python scripts/fetch_rates.py ${{ inputs.full && '--full' || '' }}
 
-      # 뉴스 수집(언론사 RSS·구글 뉴스)은 2026-10-26 중단 — 각 피드 약관이 비상업·개인 용도로 한정. 화면은 링크 모음.
+      # 뉴스: 연합뉴스 RSS만(비상업·개인 용도 허용, 이 사이트는 광고 없는 비상업). 제목·링크·시각만 저장.
+      - name: 뉴스 수집 (연합뉴스 RSS)
+        continue-on-error: true
+        run: python scripts/fetch_news.py
 
       - name: 데이터 커밋
         run: |

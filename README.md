@@ -53,5 +53,5 @@ python -m http.server -d docs 8000     # http://localhost:8000
 ## 손볼 곳
 
 - 계열 추가: `fetch_rates.py`의 `SERIES`와 `index.html`의 `SERIES`에 같은 키로 추가. 항목코드는 ECOS `StatisticItemList/817Y002`로 확인.
-- 뉴스: 2026-10-26부터 기사 수집을 하지 않고 언론사·포털·공식 기관 링크 모음만 둔다(RSS·구글 뉴스 약관이 비상업·개인 용도 한정). 링크는 `docs/index.html` 의 `.newslinks`.
+- 뉴스: `scripts/fetch_news.py` 가 연합뉴스 RSS(경제·마켓+·전체)만 읽어 제목·링크·시각을 `docs/data/news.json` 에 10일치 보관(요약 저장 안 함). 연합뉴스는 비상업·개인 용도 RSS 이용을 허용(이 사이트는 광고 없는 비상업). 구글 뉴스·인포맥스·한경은 약관상 쓰지 않음. 아래 링크 모음은 `.newslinks`.
 - 기사 본문은 저장하지 않습니다. 제목, RSS 요약 앞 160자, 원문 링크만 보관합니다.
