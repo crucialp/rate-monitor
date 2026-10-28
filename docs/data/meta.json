@@ -1,8 +1,8 @@
 {
- "news_updated": "2026-10-28T16:06+09:00",
- "news_count": 38,
- "rates_updated": "2026-10-28T16:06+09:00",
- "rates_last_date": "20261027",
+ "news_updated": "2026-10-28T17:06+09:00",
+ "news_count": 42,
+ "rates_updated": "2026-10-28T17:06+09:00",
+ "rates_last_date": "20261028",
  "series": {
   "base": "기준금리",
   "call": "콜금리(1일)",
