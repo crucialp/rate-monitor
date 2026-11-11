@@ -1,4 +1,5 @@
-// 관리자 화면(/admin): 방문 수와 IP 를 보여준다. 비밀번호(ADMIN_PASSWORD) 로 잠근 HTTP Basic 인증.
+// (2026-11-11부터 쓰지 않음) 예전 관리자 화면 — /admin 은 이제 통합 관리자(fx-monitor.pages.dev/admin)로 넘긴다.
+// isBot(봇 판정 규칙)과 pruneVisits(90일 지난 기록 삭제)는 계속 쓴다.
 // 방문 기록은 site.js 의 logVisit 이 D1(visits 테이블)에 남긴다.
 
 const DAY = 86400000;

@@ -1,8 +1,8 @@
 // 사이트 제공: GitHub 저장소의 docs/ 파일을 받아 일반 웹사이트로 내보낸다.
 // 방문자 브라우저는 Cloudflare 주소(pages.dev / workers.dev)에만 접속하므로 GitHub 가 막힌 망에서도 열린다.
 // Worker(index.js)와 Pages(pages/_worker.js)가 같이 쓴다.
-// 페이지를 열 때마다 방문 기록(D1)을 남기고, /admin 은 관리자 화면(admin.js)으로 보낸다.
-import { handleAdmin, isBot } from "./admin.js";
+// 페이지를 열 때마다 방문 기록(D1)을 남기고, /admin 은 통합 관리자 화면(fx-monitor.pages.dev/admin)으로 넘긴다.
+import { isBot } from "./admin.js";
 
 const ORIGIN = "https://raw.githubusercontent.com/crucialp/rate-monitor/main/docs";
 const TYPES = {
@@ -25,8 +25,10 @@ export async function serveSite(request, env, ctx) {
     return new Response("Method Not Allowed", { status: 405 });
   }
   const url = new URL(request.url);
-  let path = decodeURIComponent(url.pathname);
-  if (path === "/admin" || path.startsWith("/admin/")) return handleAdmin(request, env, path);
+  let path;
+  try { path = decodeURIComponent(url.pathname); } catch { return new Response("Bad Request", { status: 400 }); }
+  // 옛 관리자 화면(비밀번호 한 줄짜리 Basic 인증)은 닫고 통합 관리자 화면으로 보낸다(2026-11-11 보안 점검) — 입구를 하나로 줄임
+  if (path === "/admin" || path.startsWith("/admin/")) return Response.redirect("https://fx-monitor.pages.dev/admin", 302);
   if (path.endsWith("/")) path += "index.html";
   const ext = path.split(".").pop().toLowerCase();
   if (path.includes("..") || !TYPES[ext]) return new Response("Not Found", { status: 404 });
@@ -65,6 +67,9 @@ async function logVisit(request, env, url) {
   const ua = (request.headers.get("user-agent") || "").slice(0, 400);
   const cf = request.cf || {};
   try {
+    const ip = request.headers.get("cf-connecting-ip") || "";
+    const recent = await env.DB.prepare("SELECT COUNT(*) n FROM visits WHERE ip = ? AND ts > ?").bind(ip, Date.now() - 3600e3).first();
+    if (recent && recent.n >= 60) return;   // 같은 IP 1시간 60건까지만(도배로 D1 쓰기 한도 소진 방지)
     await env.DB.prepare(
       "INSERT INTO visits (ts, ip, country, city, org, ua, bot, host, query, referer) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)"
     ).bind(
