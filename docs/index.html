@@ -419,7 +419,9 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 
 /* ---------- 금리 전망(3번째 탭) */
-.fc-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.fc-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .fc-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .fc-tiles { grid-template-columns: minmax(0, 1fr); } }
 .fc-tile { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
 .fc-tile .k { font-size: 12.5px; color: var(--ink-2); font-weight: 500; }
 .fc-tile .v { font-size: 26px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1.25; }
@@ -427,15 +429,18 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .fc-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; padding: 0 4px; }
 .fc-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--ink-2); }
 .fc-legend > span { display: inline-flex; align-items: center; gap: 6px; }
-.fc-legend i { display: inline-block; width: 18px; height: 2px; border-radius: 2px; background: var(--s1); }
-.fc-legend i.dash { background: repeating-linear-gradient(90deg, var(--s1) 0 5px, transparent 5px 9px); }
-.fc-legend i.band { height: 10px; background: color-mix(in srgb, var(--s1) 18%, transparent); }
+.fc-legend i { display: inline-block; width: 18px; height: 2px; border-radius: 2px; background: var(--ink-2); }
+.fc-legend i.dash { background: repeating-linear-gradient(90deg, var(--ink-2) 0 5px, transparent 5px 9px); }
+.fc-legend i.band { height: 10px; background: var(--wash); outline: 1px solid var(--hair); }
+.fc-legend i.whisk { width: 2px; height: 12px; background: var(--ink-2); opacity: .6; }
+.fc-chips { padding: 0 4px; }
 .fc-band { fill: color-mix(in srgb, var(--s1) 16%, transparent); }
 .fc-zone { fill: var(--wash); }
 .fc-lab { font-family: var(--f-body); font-size: 12px; font-weight: 600; fill: var(--ink); font-variant-numeric: tabular-nums; }
-#fc-chart .tip { max-width: 320px; }
-#fc-chart .tip-row { grid-template-columns: 14px auto 1fr; }
-#fc-chart .tip-row b { white-space: nowrap; }
+#fc-chart .tip, #fc-chart2 .tip { max-width: 340px; }
+#fc-chart .tip-row, #fc-chart2 .tip-row { grid-template-columns: 14px auto 1fr; }
+#fc-chart .tip-row b, #fc-chart2 .tip-row b { white-space: nowrap; }
+.fc-table tbody th .tagx { display: inline-block; margin-left: 4px; font-size: 10.5px; color: var(--muted); border: 1px solid var(--hair); border-radius: 3px; padding: 0 4px; font-weight: 400; }
 #fc-chart .tip-row span:last-child { white-space: normal; }
 .table-scroll.fc { max-height: none; }
 .fc-table th, .fc-table td { vertical-align: top; }
@@ -583,27 +588,49 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
   <section class="page" id="page-fc" role="tabpanel" aria-labelledby="tab-fc" hidden>
     <div class="page-head">
       <h1 data-i18n="h1Fc">금리 전망</h1>
-      <p class="lede" data-i18n="ledeFc">국내 증권사·외국계 은행·연구기관이 공개한 한국은행 기준금리 경로와 2027년 국고채 금리 전망을 모았습니다.</p>
+      <p class="lede" data-i18n="ledeFc">국내 증권사·외국계 은행·연구기관이 공개한 한국·미국 기준금리 경로와 국고채·미국채 금리 전망을 모았습니다.</p>
       <p class="note" id="fc-status"></p>
     </div>
     <div class="fc-tiles" id="fc-tiles"></div>
-    <section class="card" data-i18n-aria="fcChartH" aria-label="기준금리: 실제와 기관 전망">
+
+    <section class="card" data-i18n-aria="fcChartH" aria-label="정책금리: 실제와 기관 전망">
       <div class="fc-head">
-        <h2 data-i18n="fcChartH">기준금리: 실제와 기관 전망</h2>
+        <h2 data-i18n="fcChartH">정책금리: 실제와 기관 전망</h2>
         <div class="fc-legend">
-          <span><i class="ln"></i><span data-i18n="fcLgActual">실제 기준금리</span></span>
+          <span><i class="ln"></i><span data-i18n="fcLgActual">실제</span></span>
           <span><i class="dash"></i><span data-i18n="fcLgMed">전망 중앙값(분기말)</span></span>
           <span><i class="band"></i><span data-i18n="fcLgBand">전망 범위(가장 낮은~높은)</span></span>
         </div>
       </div>
-      <div class="chart-wrap" id="fc-chart" tabindex="0" data-i18n-aria="fcChartAria" aria-label="기준금리 실제 추이와 기관 전망 그래프"></div>
+      <div class="chips fc-chips" id="fc-chips-pol" role="group" data-i18n-aria="seriesAria" aria-label="계열 선택"></div>
+      <div class="chart-wrap" id="fc-chart" tabindex="0" data-i18n-aria="fcChartAria" aria-label="정책금리 실제 추이와 기관 전망 그래프"></div>
     </section>
 
-    <div class="table-head"><h2 data-i18n="fcBaseH">기관별 기준금리 경로 (분기말, %)</h2></div>
+    <div class="table-head"><h2 data-i18n="fcBaseH">한국 기준금리 경로 (분기말, %)</h2></div>
     <div class="table-scroll fc"><table class="fc-table" id="fc-base"></table></div>
+
+    <div class="table-head"><h2 data-i18n="fcFedH">미국 기준금리 경로 (분기말, 목표범위 상단 %)</h2></div>
+    <div class="table-scroll fc"><table class="fc-table" id="fc-fed"></table></div>
+
+    <section class="card" data-i18n-aria="fcBondH" aria-label="채권금리: 실제와 기관 전망">
+      <div class="fc-head">
+        <h2 data-i18n="fcBondH">채권금리: 국고채·미국채 실제와 기관 전망</h2>
+        <div class="fc-legend">
+          <span><i class="ln"></i><span data-i18n="fcLgActual">실제</span></span>
+          <span><i class="dash"></i><span data-i18n="fcLgMed">전망 중앙값(분기말)</span></span>
+          <span><i class="whisk"></i><span data-i18n="fcLgWhisk">전망 범위(기관 최저~최고)</span></span>
+        </div>
+      </div>
+      <div class="chips fc-chips" id="fc-chips-bond" role="group" data-i18n-aria="seriesAria" aria-label="계열 선택"></div>
+      <div class="chart-wrap" id="fc-chart2" tabindex="0" data-i18n-aria="fcBondAria" aria-label="채권금리 실제 추이와 기관 전망 그래프"></div>
+      <p class="caption" data-i18n="fcBondNote"></p>
+    </section>
 
     <div class="table-head"><h2 data-i18n="fcKtbH">국고채 금리 전망 (2027년, %)</h2><span class="note" id="fc-ktb-now"></span></div>
     <div class="table-scroll fc"><table class="fc-table" id="fc-ktb"></table></div>
+
+    <div class="table-head"><h2 data-i18n="fcUstH">미국채 10년 전망 (%)</h2><span class="note" id="fc-ust-now"></span></div>
+    <div class="table-scroll fc"><table class="fc-table" id="fc-ust"></table></div>
 
     <div class="fc-more">
       <h2 data-i18n="fcSurveyH">설문·점도표</h2>
@@ -612,6 +639,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
         <li data-i18n="fcN1"></li>
         <li data-i18n="fcN2"></li>
         <li data-i18n="fcN3"></li>
+        <li data-i18n="fcN4"></li>
         <li data-i18n="fcKoNote"></li>
       </ul>
     </div>
@@ -663,15 +691,22 @@ const LANGS = ["ko", "en", "ja", "zh"];
 const LOCALE = { ko: "ko-KR", en: "en-US", ja: "ja-JP", zh: "zh-CN" };
 const I18N = {
   ko: {
+    fcBondH: "채권금리: 국고채·미국채 실제와 기관 전망", fcBondAria: "국고채·미국채 금리 실제 추이와 기관 전망 그래프. 좌우 화살표로 지점을 옮기면 값이 표시됩니다.",
+    fcLgWhisk: "전망 범위(기관 최저~최고)", fcSerKR: "한국 기준금리", fcSerUS: "미국 기준금리(상단)", fcSerK3: "국고채 3년", fcSerK10: "국고채 10년", fcSerU10: "미국채 10년",
+    fcChipEnd: "→ 2027말 {0}", fcFedH: "미국 기준금리 경로 (분기말, 목표범위 상단 %)", fcUstH: "미국채 10년 전망 (%)", fcOff: "공식 전망", fcSurveyTag: "설문",
+    fcUsK: "미국 기준금리", fcUsS: "다음 FOMC {0} · 12월 인상 전망 {1}/{2}곳", fcU10K: "미국채 10년 (지금)", fcU10S: "{0} · 2027년 말 전망 {1}~{2}%",
+    fcUstNow: "지금 미국채 2년 {0}% · 10년 {1}% ({2})", fcRngAt: "범위 (시점)",
+    fcBondNote: "분기 숫자를 낸 기관끼리 중앙값을 이었고, 막대는 연간 범위·연평균·적정 금리까지 넣은 기관 전망의 최저~최고입니다. 분기 값은 분기 끝에 찍었습니다(기관에 따라 분기 평균).",
+    fcN4: "미국 금리 실제 값: FRED(세인트루이스 연준), 원자료 미 연준 H.15 — 공공 자료. 미국 기준금리는 목표범위 상단으로 적었습니다.",
     tabFc: "금리 전망", h1Fc: "금리 전망",
-    ledeFc: "국내 증권사·외국계 은행·연구기관이 공개한 한국은행 기준금리 경로와 2027년 국고채 금리 전망을 모았습니다. 언론 보도와 공개 발언 기준이며, 분기말 기준금리는 기관이 밝힌 인상 시점과 횟수(한 번에 0.25%p)로 적었습니다.",
+    ledeFc: "국내 증권사·외국계 은행·연구기관이 공개한 한국·미국 기준금리 경로와 국고채·미국채 금리 전망을 모았습니다. 언론 보도와 공개 발언 기준이며, 분기말 기준금리는 기관이 밝힌 인상 시점과 횟수(한 번에 0.25%p)로 적었습니다.",
     fcAsof: "{0} 기준 · 기관 {1}곳", fcLoad: "전망 자료를 불러오는 중…", fcFail: "전망 자료를 불러오지 못했습니다. 잠시 뒤 다시 열어 주세요.",
-    fcNowK: "지금 기준금리", fcNowS: "다음 금통위 {0}", fcNextK: "다음 금통위 인상 전망", fcNextS: "인상 시점을 밝힌 기관 기준", fcNextV: "{1}곳 중 {0}곳",
+    fcNowK: "한국 기준금리", fcNowS: "다음 금통위 {0}", fcNextK: "다음 금통위 인상 전망", fcNextS: "인상 시점을 밝힌 기관 기준", fcNextV: "{1}곳 중 {0}곳",
     fcEndK: "2027년 말 기준금리", fcEndS: "중앙값 · 범위 {0}~{1}% · {2}곳", fcKtbK: "국고채 3년 (지금)", fcKtbS: "{0} · 2027년 전망 {1}~{2}%",
-    fcChartH: "기준금리: 실제와 기관 전망", fcLgActual: "실제 기준금리", fcLgMed: "전망 중앙값(분기말)", fcLgBand: "전망 범위(가장 낮은~높은)", fcZone: "전망",
-    fcChartAria: "기준금리 실제 추이와 기관 전망 그래프. 좌우 화살표로 지점을 옮기면 값이 표시됩니다.",
+    fcChartH: "정책금리: 한국·미국 실제와 기관 전망", fcLgActual: "실제", fcLgMed: "전망 중앙값(분기말)", fcLgBand: "전망 범위(가장 낮은~높은)", fcZone: "전망",
+    fcChartAria: "한국·미국 기준금리 실제 추이와 기관 전망 그래프. 좌우 화살표로 지점을 옮기면 값이 표시됩니다.",
     fcTipQ: "{0} 분기말 전망", fcTipMed: "중앙값", fcTipRange: "범위", fcTipN: "{0}곳", fcTipActual: "기준금리",
-    fcBaseH: "기관별 기준금리 경로 (분기말, %)", fcKtbH: "국고채 금리 전망 (2027년, %)", fcSurveyH: "설문·점도표",
+    fcBaseH: "한국 기준금리 경로 (분기말, %)", fcKtbH: "국고채 금리 전망 (2027년, %)", fcSurveyH: "설문·점도표",
     fcInst: "기관", fcDate: "발표", fcTerm: "최종", fcNote: "근거·시나리오", fcSrc: "출처", fcDom: "국내", fcFor: "외국계·해외",
     fcMedRow: "중앙값", fcNRow: "기관 수", fcY3: "국고 3년", fcY10: "국고 10년", fcAvg: "연평균", fcRng: "범위·적정", fcBasis: "기준", fcFair: "적정 {0}",
     fcKtbNow: "지금 국고 3년 {0}% · 10년 {1}% ({2})", fcLink: "원문",
@@ -723,15 +758,22 @@ const I18N = {
     footer2: "운영 통계를 위해 접속 기록(IP, 접속 시각, 지역, 기기 정보)을 90일간 보관한 뒤 자동 삭제합니다.",
   },
   en: {
+    fcBondH: "Bond yields: KTB and UST, actual and forecasts", fcBondAria: "Chart of actual Korean and US Treasury yields and institutional forecasts. Use the left/right arrow keys to move between points.",
+    fcLgWhisk: "Forecast range (lowest–highest)", fcSerKR: "BOK base rate", fcSerUS: "Fed funds (upper)", fcSerK3: "KTB 3Y", fcSerK10: "KTB 10Y", fcSerU10: "UST 10Y",
+    fcChipEnd: "→ end-27 {0}", fcFedH: "Fed funds path (quarter-end, upper bound %)", fcUstH: "US Treasury 10-year forecasts (%)", fcOff: "Official", fcSurveyTag: "survey",
+    fcUsK: "Fed funds target", fcUsS: "Next FOMC {0} · Dec hike expected {1}/{2}", fcU10K: "UST 10Y (now)", fcU10S: "{0} · end-2027 forecasts {1}–{2}%",
+    fcUstNow: "Now: UST 2Y {0}% · 10Y {1}% ({2})", fcRngAt: "Range (when)",
+    fcBondNote: "The median line joins institutions that gave quarterly numbers; bars show the lowest–highest forecast including annual ranges, averages and fair values. Quarterly values are plotted at quarter-end (some are quarterly averages).",
+    fcN4: "US actuals: FRED (St. Louis Fed), source Federal Reserve H.15 — public data. The Fed funds rate is shown as the upper bound of the target range.",
     tabFc: "Outlook", h1Fc: "BOK & KTB Rate Outlook",
-    ledeFc: "Bank of Korea base-rate paths and 2027 Korean Treasury yield forecasts published by Korean securities firms, global banks and research institutes. Based on press reports and public remarks; quarter-end base rates follow each institution's stated hike timing and count (25 bp per move).",
+    ledeFc: "Policy-rate paths for Korea and the US, and Korean and US Treasury yield forecasts, published by Korean securities firms, global banks and research institutes. Based on press reports and public remarks; quarter-end base rates follow each institution's stated hike timing and count (25 bp per move).",
     fcAsof: "As of {0} · {1} institutions", fcLoad: "Loading forecasts…", fcFail: "Could not load forecasts. Please try again shortly.",
-    fcNowK: "BOK base rate now", fcNowS: "Next MPC {0}", fcNextK: "Hike expected at next MPC", fcNextS: "Institutions that gave a timing", fcNextV: "{0} of {1}",
+    fcNowK: "BOK base rate", fcNowS: "Next MPC {0}", fcNextK: "Hike expected at next MPC", fcNextS: "Institutions that gave a timing", fcNextV: "{0} of {1}",
     fcEndK: "BOK rate at end-2027", fcEndS: "Median · range {0}–{1}% · {2} inst.", fcKtbK: "KTB 3Y (now)", fcKtbS: "{0} · 2027 forecasts {1}–{2}%",
-    fcChartH: "BOK base rate: actual and institutional forecasts", fcLgActual: "Actual base rate", fcLgMed: "Forecast median (quarter-end)", fcLgBand: "Forecast range (low–high)", fcZone: "Forecast",
-    fcChartAria: "Chart of the actual BOK base rate and institutional forecasts. Use the left/right arrow keys to move between points.",
+    fcChartH: "Policy rates: Korea and US, actual and forecasts", fcLgActual: "Actual", fcLgMed: "Forecast median (quarter-end)", fcLgBand: "Forecast range (low–high)", fcZone: "Forecast",
+    fcChartAria: "Chart of actual Korean and US policy rates and institutional forecasts. Use the left/right arrow keys to move between points.",
     fcTipQ: "{0} quarter-end forecasts", fcTipMed: "Median", fcTipRange: "Range", fcTipN: "{0} inst.", fcTipActual: "Base rate",
-    fcBaseH: "Base-rate path by institution (quarter-end, %)", fcKtbH: "Korean Treasury yield forecasts (2027, %)", fcSurveyH: "Polls and the BOK dot plot",
+    fcBaseH: "BOK base-rate path (quarter-end, %)", fcKtbH: "Korean Treasury yield forecasts (2027, %)", fcSurveyH: "Polls and the BOK dot plot",
     fcInst: "Institution", fcDate: "Published", fcTerm: "Terminal", fcNote: "Rationale / scenario", fcSrc: "Source", fcDom: "Korean", fcFor: "Global",
     fcMedRow: "Median", fcNRow: "Count", fcY3: "KTB 3Y", fcY10: "KTB 10Y", fcAvg: "Avg.", fcRng: "Range / fair", fcBasis: "Basis", fcFair: "fair {0}",
     fcKtbNow: "Now: KTB 3Y {0}% · 10Y {1}% ({2})", fcLink: "link",
@@ -783,15 +825,22 @@ const I18N = {
     footer2: "Access logs (IP, time, region, device) are kept for 90 days for operating statistics, then deleted automatically.",
   },
   ja: {
+    fcBondH: "債券利回り：韓国国債・米国債の実績と各機関の見通し", fcBondAria: "韓国国債・米国債利回りの実績と各機関の見通しのグラフ。左右の矢印キーで地点を移動すると値が表示されます。",
+    fcLgWhisk: "見通しの範囲（最低〜最高）", fcSerKR: "韓国 政策金利", fcSerUS: "米FF金利（上限）", fcSerK3: "韓国国債 3年", fcSerK10: "韓国国債 10年", fcSerU10: "米国債 10年",
+    fcChipEnd: "→ 27年末 {0}", fcFedH: "米国の政策金利の経路（四半期末、誘導目標上限 %）", fcUstH: "米国債10年の見通し（%）", fcOff: "公式見通し", fcSurveyTag: "調査",
+    fcUsK: "米国の政策金利", fcUsS: "次回FOMC {0} · 12月利上げ予想 {1}/{2}", fcU10K: "米国債10年（現在）", fcU10S: "{0} · 2027年末見通し {1}〜{2}%",
+    fcUstNow: "現在：米国債2年 {0}% · 10年 {1}%（{2}）", fcRngAt: "範囲（時期）",
+    fcBondNote: "四半期の数値を出した機関どうしで中央値を結び、棒は年間レンジ・年平均・適正水準を含む見通しの最低〜最高です。四半期の値は期末に表示（機関により四半期平均）。",
+    fcN4: "米国の実績：FRED（セントルイス連銀）、原資料は米連邦準備制度H.15（公共データ）。米国の政策金利は誘導目標の上限で表示。",
     tabFc: "見通し", h1Fc: "韓国金利見通し",
-    ledeFc: "韓国の証券会社・外資系銀行・研究機関が公表した韓国銀行の政策金利の経路と、2027年の韓国国債利回り見通しをまとめました。報道と公開発言に基づき、四半期末の政策金利は各機関が示した利上げの時期と回数（1回0.25%pt）で算出しています。",
+    ledeFc: "韓国の証券会社・外資系銀行・研究機関が公表した韓国・米国の政策金利の経路と、韓国国債・米国債の利回り見通しをまとめました。報道と公開発言に基づき、四半期末の政策金利は各機関が示した利上げの時期と回数（1回0.25%pt）で算出しています。",
     fcAsof: "{0} 時点 · {1}機関", fcLoad: "見通しデータを読み込み中…", fcFail: "見通しデータを読み込めませんでした。しばらくしてから再度お試しください。",
-    fcNowK: "現在の政策金利", fcNowS: "次回金融通貨委員会 {0}", fcNextK: "次回会合で利上げ予想", fcNextS: "時期を示した機関のうち", fcNextV: "{1}機関中{0}",
+    fcNowK: "韓国の政策金利", fcNowS: "次回金融通貨委員会 {0}", fcNextK: "次回会合で利上げ予想", fcNextS: "時期を示した機関のうち", fcNextV: "{1}機関中{0}",
     fcEndK: "2027年末の政策金利", fcEndS: "中央値 · 範囲 {0}〜{1}% · {2}機関", fcKtbK: "韓国国債3年（現在）", fcKtbS: "{0} · 2027年見通し {1}〜{2}%",
-    fcChartH: "政策金利：実績と各機関の見通し", fcLgActual: "政策金利（実績）", fcLgMed: "見通しの中央値（四半期末）", fcLgBand: "見通しの範囲（最低〜最高）", fcZone: "見通し",
+    fcChartH: "政策金利：韓国・米国の実績と各機関の見通し", fcLgActual: "実績", fcLgMed: "見通しの中央値（四半期末）", fcLgBand: "見通しの範囲（最低〜最高）", fcZone: "見通し",
     fcChartAria: "政策金利の実績と各機関の見通しのグラフ。左右の矢印キーで地点を移動すると値が表示されます。",
     fcTipQ: "{0} 四半期末の見通し", fcTipMed: "中央値", fcTipRange: "範囲", fcTipN: "{0}機関", fcTipActual: "政策金利",
-    fcBaseH: "機関別の政策金利の経路（四半期末、%）", fcKtbH: "韓国国債利回り見通し（2027年、%）", fcSurveyH: "アンケート・ドットチャート",
+    fcBaseH: "韓国の政策金利の経路（四半期末、%）", fcKtbH: "韓国国債利回り見通し（2027年、%）", fcSurveyH: "アンケート・ドットチャート",
     fcInst: "機関", fcDate: "発表", fcTerm: "最終", fcNote: "根拠・シナリオ", fcSrc: "出所", fcDom: "韓国", fcFor: "外資系・海外",
     fcMedRow: "中央値", fcNRow: "機関数", fcY3: "国債3年", fcY10: "国債10年", fcAvg: "年平均", fcRng: "範囲・適正", fcBasis: "基準", fcFair: "適正 {0}",
     fcKtbNow: "現在：国債3年 {0}% · 10年 {1}%（{2}）", fcLink: "原文",
@@ -843,15 +892,22 @@ const I18N = {
     footer2: "運営統計のため、アクセス記録（IP・時刻・地域・端末情報）を90日間保管した後、自動で削除します。",
   },
   zh: {
+    fcBondH: "债券收益率：韩国国债与美国国债实际与机构预测", fcBondAria: "韩国国债与美国国债收益率实际走势及机构预测图。用左右方向键移动即可显示数值。",
+    fcLgWhisk: "预测区间（最低–最高）", fcSerKR: "韩国基准利率", fcSerUS: "美国联邦基金利率（上限）", fcSerK3: "韩国国债3年", fcSerK10: "韩国国债10年", fcSerU10: "美国国债10年",
+    fcChipEnd: "→ 27年末 {0}", fcFedH: "美国基准利率路径（季末，目标区间上限 %）", fcUstH: "美国国债10年预测（%）", fcOff: "官方预测", fcSurveyTag: "调查",
+    fcUsK: "美国基准利率", fcUsS: "下次FOMC {0} · 预计12月加息 {1}/{2}", fcU10K: "美国国债10年（当前）", fcU10S: "{0} · 2027年末预测 {1}–{2}%",
+    fcUstNow: "当前：美国国债2年 {0}% · 10年 {1}%（{2}）", fcRngAt: "区间（时间）",
+    fcBondNote: "中位数线连接给出季度数值的机构；竖条为包括年度区间、年均和合理水平在内的机构预测最低–最高。季度数值标在季末（部分机构为季度平均）。",
+    fcN4: "美国实际数据：FRED（圣路易斯联储），原始数据为美联储H.15（公共数据）。美国基准利率按目标区间上限显示。",
     tabFc: "利率展望", h1Fc: "韩国利率展望",
-    ledeFc: "汇总韩国证券公司、外资银行和研究机构公开的韩国央行基准利率路径及2027年韩国国债收益率预测。依据媒体报道和公开发言；季末基准利率按各机构给出的加息时间和次数（每次0.25个百分点）计算。",
+    ledeFc: "汇总韩国证券公司、外资银行和研究机构公开的韩美基准利率路径及韩国国债、美国国债收益率预测。依据媒体报道和公开发言；季末基准利率按各机构给出的加息时间和次数（每次0.25个百分点）计算。",
     fcAsof: "截至{0} · {1}家机构", fcLoad: "正在加载预测数据…", fcFail: "无法加载预测数据，请稍后再试。",
-    fcNowK: "当前基准利率", fcNowS: "下次货币政策会议 {0}", fcNextK: "预计下次会议加息", fcNextS: "在给出时间的机构中", fcNextV: "{1}家中{0}家",
+    fcNowK: "韩国基准利率", fcNowS: "下次货币政策会议 {0}", fcNextK: "预计下次会议加息", fcNextS: "在给出时间的机构中", fcNextV: "{1}家中{0}家",
     fcEndK: "2027年末基准利率", fcEndS: "中位数 · 区间 {0}–{1}% · {2}家", fcKtbK: "韩国国债3年（当前）", fcKtbS: "{0} · 2027年预测 {1}–{2}%",
-    fcChartH: "基准利率：实际与机构预测", fcLgActual: "实际基准利率", fcLgMed: "预测中位数（季末）", fcLgBand: "预测区间（最低–最高）", fcZone: "预测",
+    fcChartH: "政策利率：韩美实际与机构预测", fcLgActual: "实际", fcLgMed: "预测中位数（季末）", fcLgBand: "预测区间（最低–最高）", fcZone: "预测",
     fcChartAria: "基准利率实际走势与机构预测图。用左右方向键移动即可显示数值。",
     fcTipQ: "{0} 季末预测", fcTipMed: "中位数", fcTipRange: "区间", fcTipN: "{0}家", fcTipActual: "基准利率",
-    fcBaseH: "各机构基准利率路径（季末，%）", fcKtbH: "韩国国债收益率预测（2027年，%）", fcSurveyH: "调查与点阵图",
+    fcBaseH: "韩国基准利率路径（季末，%）", fcKtbH: "韩国国债收益率预测（2027年，%）", fcSurveyH: "调查与点阵图",
     fcInst: "机构", fcDate: "发布", fcTerm: "终端利率", fcNote: "依据与情景", fcSrc: "来源", fcDom: "韩国", fcFor: "外资与海外",
     fcMedRow: "中位数", fcNRow: "机构数", fcY3: "国债3年", fcY10: "国债10年", fcAvg: "年均", fcRng: "区间·合理", fcBasis: "口径", fcFair: "合理 {0}",
     fcKtbNow: "当前：国债3年 {0}% · 10年 {1}%（{2}）", fcLink: "原文",
@@ -1527,12 +1583,10 @@ async function loadRates() {
 
 
 // ================================================================ PAGE 3: 금리 전망
-// data/forecast.json: 기관이 공개한 기준금리 경로(분기말)와 국고채 전망. 손으로 고치는 파일(자동 수집 아님).
-let FC = null, FCG = null, FC_LOADING = false;
-const fcChart = $("fc-chart");
-const fcTip = document.createElement("div");
-fcTip.className = "tip";
-fcTip.hidden = true;
+// data/forecast.json(손으로 고치는 파일): 기관이 공개한 한국·미국 기준금리 경로, 국고채·미국채 전망, 설문·점도표.
+// data/us.csv: 미국 금리 실제 값(FRED, 원자료 미 연준 H.15) — scripts/fetch_us.py 가 매시 갱신.
+// 그래프 두 개(정책금리·채권금리)는 1페이지처럼 계열 칩으로 켜고 끄며, 오른쪽 끝에 이름표를 단다.
+let FC = null, US = null, FC_LOADING = false;
 const BASIS_NAME = {
   "분기 평균": { en: "Quarterly avg.", ja: "四半期平均", zh: "季度平均" },
   "분기(기준 미표기)": { en: "Quarterly (basis n/a)", ja: "四半期（基準不明）", zh: "季度（口径未注明）" },
@@ -1540,22 +1594,85 @@ const BASIS_NAME = {
   "범위": { en: "Range", ja: "レンジ", zh: "区间" },
   "적정 금리": { en: "Fair value", ja: "適正水準", zh: "合理水平" },
   "연평균": { en: "Annual avg.", ja: "年平均", zh: "年均" },
+  "평균 전망": { en: "Survey average", ja: "調査平均", zh: "调查平均" },
+  "2027년 중반 기본 시나리오": { en: "Mid-2027 base case", ja: "2027年半ば基本シナリオ", zh: "2027年年中基准情景" },
+  "반기(상·하반기)": { en: "Half-year (H1/H2)", ja: "半期（上期・下期）", zh: "半年（上/下半年）" },
+  "2028년까지 수준": { en: "Level through 2028", ja: "2028年までの水準", zh: "至2028年水平" },
+  "안정 구간(시점 미제시)": { en: "Settling range (no date)", ja: "安定レンジ（時期なし）", zh: "企稳区间（未给时间）" },
 };
 const instName = r => (LANG === "ko" ? (r.inst || r.name) : (r.en || r.inst || r.name));
+const basisName = b => (LANG === "ko" ? b : (BASIS_NAME[b] && BASIS_NAME[b][LANG]) || b);
 const md = iso10 => { const p = iso10.split("-"); return `${+p[1]}/${+p[2]}`; };
 const pct = v => v.toFixed(2);
+const ms10 = q => Date.UTC(+q.slice(0, 4), +q.slice(5, 7) - 1, +q.slice(8, 10));
+const ms8 = q => Date.UTC(+q.slice(0, 4), +q.slice(4, 6) - 1, +q.slice(6, 8));
+const FC_START = Date.UTC(2025, 0, 1), FC_END = Date.UTC(2028, 0, 1);
+const Q27 = ["1Q27", "2Q27", "3Q27", "4Q27"];
 function median(a) { const x = [...a].sort((p, q) => p - q), n = x.length; return n ? (n % 2 ? x[(n - 1) / 2] : (x[n / 2 - 1] + x[n / 2]) / 2) : NaN; }
-function fcStats(i) {
-  const rows = FC.base.filter(r => r.path[i] != null), vs = rows.map(r => r.path[i]);
-  const lv = {};
-  rows.forEach(r => { const k = pct(r.path[i]); (lv[k] = lv[k] || []).push(instName(r)); });
-  return { n: vs.length, med: median(vs), lo: Math.min(...vs), hi: Math.max(...vs), lv };
-}
-function lastOf(col) {
-  for (let i = D.dates.length - 1; i >= 0; i--) if (!Number.isNaN(D.cols[col][i])) return { v: D.cols[col][i], d: D.dates[i] };
+function lastIn(T, col) {
+  if (!T || !T.cols[col]) return null;
+  for (let i = T.dates.length - 1; i >= 0; i--) if (!Number.isNaN(T.cols[col][i])) return { v: T.cols[col][i], d: T.dates[i] };
   return null;
 }
-async function loadFc() { FC = JSON.parse(await getText("data/forecast.json")); }
+function actual(T, col) {
+  const out = [];
+  if (!T || !T.cols[col]) return out;
+  for (let i = lowerBound(T.dates, "20250101"); i < T.dates.length; i++) { const v = T.cols[col][i]; if (!Number.isNaN(v)) out.push({ x: ms8(T.dates[i]), v, d: T.dates[i] }); }
+  return out;
+}
+// 분기별 전망: pts = 그 분기를 콕 집은 숫자(중앙값에 씀), extra = 연간 범위·연평균·적정 금리(최저~최고에만 씀)
+function quarterStats(collect) {
+  return FC.quarters.map((label, i) => {
+    const pts = [], extra = [], who = new Set();
+    collect(label, i, pts, extra, who);
+    const all = pts.map(p => p.v).concat(extra), lv = {};
+    pts.forEach(p => { const k = pct(p.v); (lv[k] = lv[k] || []).push(p.n); });
+    return { i, x: ms10(FC.quarter_end[i]), label, n: who.size, med: pts.length ? median(pts.map(p => p.v)) : NaN,
+      lo: all.length ? Math.min(...all) : NaN, hi: all.length ? Math.max(...all) : NaN, lv };
+  });
+}
+const pathStats = rows => quarterStats((label, i, pts, extra, who) => {
+  rows.forEach(r => { if (r.path[i] != null) { pts.push({ v: r.path[i], n: instName(r) }); who.add(r.inst); } });
+});
+const ktbStats = key => quarterStats((label, i, pts, extra, who) => {
+  if (!Q27.includes(label)) return;
+  FC.ktb.forEach(r => {
+    const o = r[key] || {}, qv = label === "1Q27" ? o.q1 : label === "4Q27" ? o.q4 : null;
+    let used = false;
+    if (qv != null) { pts.push({ v: qv, n: instName(r) }); used = true; }
+    for (const k of ["avg", "lo", "hi", "fair"]) if (o[k] != null) { extra.push(o[k]); used = true; }
+    if (used) who.add(r.inst);
+  });
+});
+const ustStats = () => quarterStats((label, i, pts, extra, who) => {
+  (FC.ust || []).forEach(r => {
+    let used = false;
+    if (r.q && r.q[label] != null) { pts.push({ v: r.q[label], n: instName(r) }); used = true; }
+    if (r.at === label && r.lo != null) { extra.push(r.lo, r.hi); used = true; }
+    if (used) who.add(r.inst);
+  });
+});
+function fcSeries(id) {
+  if (id === "pol") return [
+    { k: "kr", name: t("fcSerKR"), color: "var(--s1)", act: actual(D, "base"), step: true, q: pathStats(FC.base) },
+    { k: "us", name: t("fcSerUS"), color: "var(--s2)", act: actual(US, "fed_hi"), step: true, q: pathStats(FC.fed || []) },
+  ];
+  return [
+    { k: "k3", name: t("fcSerK3"), color: "var(--s1)", act: actual(D, "ktb3"), q: ktbStats("y3") },
+    { k: "k10", name: t("fcSerK10"), color: "var(--s2)", act: actual(D, "ktb10"), q: ktbStats("y10") },
+    { k: "u10", name: t("fcSerU10"), color: "var(--s3)", act: actual(US, "ust10"), q: ustStats() },
+  ];
+}
+const FCC = {
+  pol: { box: "fc-chart", chips: "fc-chips-pol", key: "fcOnPol", band: true, on: new Set(store.get("fcOnPol", ["kr", "us"])), G: null, tip: null },
+  bond: { box: "fc-chart2", chips: "fc-chips-bond", key: "fcOnBond", band: false, on: new Set(store.get("fcOnBond", ["k3", "k10", "u10"])), G: null, tip: null },
+};
+
+async function loadFc() {
+  const [f, u] = await Promise.all([getText("data/forecast.json"), getText("data/us.csv").catch(() => null)]);
+  FC = JSON.parse(f);
+  US = u ? parseCSV(u) : null;
+}
 function renderFc() {
   if ($("page-fc").hidden) return;
   if (!FC) {
@@ -1564,22 +1681,28 @@ function renderFc() {
     return;
   }
   if (!D) return;
-  $("fc-status").textContent = t("fcAsof", FC.asof.replaceAll("-", "."), FC.base.length + FC.ktb.filter(k => !FC.base.some(b => b.inst === k.inst)).length);
+  const insts = new Set();
+  for (const rows of [FC.base, FC.fed || [], FC.ktb, FC.ust || []]) rows.forEach(r => { if (!r.survey && r.g !== "off") insts.add(r.inst); });
+  $("fc-status").textContent = t("fcAsof", FC.asof.replaceAll("-", "."), insts.size);
   fcTiles();
-  drawFc();
+  for (const id of ["pol", "bond"]) { fcChips(id); drawFcChart(id); }
   fcTables();
 }
 function fcTiles() {
-  const now = lastOf("base"), k3 = lastOf("ktb3");
-  const withNext = FC.base.filter(r => r.path[0] != null), up = withNext.filter(r => r.path[0] > now.v + 1e-9).length;
-  const end = fcStats(4);
+  const kr = lastIn(D, "base"), k3 = lastIn(D, "ktb3"), lo = lastIn(US, "fed_lo"), hi = lastIn(US, "fed_hi"), u10 = lastIn(US, "ust10");
+  const withNext = FC.base.filter(r => r.path[0] != null), up = withNext.filter(r => r.path[0] > kr.v + 1e-9).length;
+  const fedNext = (FC.fed || []).filter(r => r.g !== "off" && r.path[0] != null), fedUp = hi ? fedNext.filter(r => r.path[0] > hi.v + 1e-9).length : 0;
+  const end = pathStats(FC.base)[4];
   const y3 = [];
   FC.ktb.forEach(r => { for (const k of ["q1", "q4", "avg", "lo", "hi", "fair"]) if (r.y3 && r.y3[k] != null) y3.push(r.y3[k]); });
+  const u4 = ustStats()[4];
   const tiles = [
-    [t("fcNowK"), pct(now.v) + "%", t("fcNowS", md(FC.next_mpc))],
+    [t("fcNowK"), pct(kr.v) + "%", t("fcNowS", md(FC.next_mpc))],
     [t("fcNextK"), t("fcNextV", up, withNext.length), t("fcNextS")],
     [t("fcEndK"), pct(end.med) + "%", t("fcEndS", pct(end.lo), pct(end.hi), end.n)],
+    [t("fcUsK"), lo && hi ? `${pct(lo.v)}~${pct(hi.v)}%` : "–", t("fcUsS", FC.next_fomc ? md(FC.next_fomc) : "–", fedUp, fedNext.length)],
     [t("fcKtbK"), k3 ? k3.v.toFixed(3) + "%" : "–", t("fcKtbS", k3 ? md(iso(k3.d)) : "", pct(Math.min(...y3)), pct(Math.max(...y3)))],
+    [t("fcU10K"), u10 ? pct(u10.v) + "%" : "–", u4 && u4.n ? t("fcU10S", u10 ? md(iso(u10.d)) : "", pct(u4.lo), pct(u4.hi)) : ""],
   ];
   const box = $("fc-tiles");
   box.textContent = "";
@@ -1592,27 +1715,57 @@ function fcTiles() {
   }
 }
 
-function drawFc() {
-  const W = Math.max(fcChart.clientWidth, 280), narrow = W < 640, H = narrow ? 300 : 380;
-  const m = { t: 28, r: narrow ? 14 : 64, b: 30, l: 44 };
-  fcChart.textContent = "";
-  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": t("fcChartAria") }, fcChart);
-  fcChart.appendChild(fcTip);
-  fcTip.hidden = true;
-  const ms8 = s => Date.UTC(+s.slice(0, 4), +s.slice(4, 6) - 1, +s.slice(6, 8));
-  const ms10 = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
-  const start = Date.UTC(2025, 0, 1), end = Date.UTC(2028, 0, 1);
-  const act = [];
-  for (let i = lowerBound(D.dates, "20250101"); i < D.dates.length; i++) { const v = D.cols.base[i]; if (!Number.isNaN(v)) act.push({ x: ms8(D.dates[i]), v, d: D.dates[i] }); }
-  if (!act.length) return;
-  const last = act[act.length - 1];
-  const Q = FC.quarter_end.map((q, i) => ({ x: ms10(q), label: FC.quarters[i], ...fcStats(i) })).filter(q => q.n);
-  const lo = Math.min(...act.map(a => a.v), ...Q.map(q => q.lo)), hi = Math.max(...act.map(a => a.v), ...Q.map(q => q.hi));
-  const d = niceDomain(lo, hi);
+// ---------- 그래프(1페이지와 같은 칩·이름표·마우스 표시)
+function fcChips(id) {
+  const C = FCC[id], wrap = $(C.chips);
+  wrap.textContent = "";
+  for (const s of fcSeries(id)) {
+    const on = C.on.has(s.k);
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed", String(on));
+    b.style.setProperty("--c", on ? s.color : "transparent");
+    const key = document.createElement("span"); key.className = "key";
+    const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = s.name;
+    const sub = document.createElement("span"); sub.className = "sub";
+    const last = s.act[s.act.length - 1], qm = s.q.filter(q => Number.isFinite(q.med)), end = qm[qm.length - 1];
+    if (last) { const v = document.createElement("b"); v.textContent = pct(last.v) + "%"; sub.append(v, document.createTextNode(" ")); }
+    sub.append(document.createTextNode(t("fcChipEnd", end && end.label === "4Q27" ? pct(end.med) + "%" : "–")));
+    b.append(key, nm, sub);
+    b.addEventListener("click", () => {
+      if (on && C.on.size === 1) return;   // 적어도 하나는 켜 둔다
+      if (on) C.on.delete(s.k); else C.on.add(s.k);
+      store.set(C.key, [...C.on]);
+      fcChips(id); drawFcChart(id);
+    });
+    wrap.appendChild(b);
+  }
+}
+function valueAt(act, x) {
+  let lo = 0, hi = act.length - 1, best = null;
+  while (lo <= hi) { const m = (lo + hi) >> 1; if (act[m].x <= x) { best = act[m]; lo = m + 1; } else hi = m - 1; }
+  return best;
+}
+function drawFcChart(id) {
+  const C = FCC[id], box = $(C.box);
+  const vis = fcSeries(id).filter(s => C.on.has(s.k) && s.act.length);
+  const W = Math.max(box.clientWidth, 280), narrow = W < 640, H = narrow ? 300 : 400;
+  const labW = vis.reduce((w, s) => Math.max(w, textWidth(`${s.name} 0.00%`)), 0);
+  const m = { t: 28, r: narrow ? 14 : Math.min(240, Math.max(70, labW + 34)), b: 30, l: 44 };
+  box.textContent = "";
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": t(id === "pol" ? "fcChartAria" : "fcBondAria") }, box);
+  if (!C.tip) { C.tip = document.createElement("div"); C.tip.className = "tip"; }
+  box.appendChild(C.tip);
+  C.tip.hidden = true;
+  C.G = null;
+  if (!vis.length) return;
+  const lastX = Math.max(...vis.map(s => s.act[s.act.length - 1].x));
+  const vals = [];
+  vis.forEach(s => { s.act.forEach(a => vals.push(a.v)); s.q.forEach(q => { if (q.n) vals.push(q.lo, q.hi); }); });
+  const d = niceDomain(Math.min(...vals), Math.max(...vals));
   const pw = W - m.l - m.r, ph = H - m.t - m.b;
-  const x = ms => m.l + (ms - start) / (end - start) * pw;
+  const x = ms => m.l + (ms - FC_START) / (FC_END - FC_START) * pw;
   const y = v => m.t + (d.hi - v) / (d.hi - d.lo) * ph;
-  const zx = x(last.x);
+  const zx = x(lastX);
   el("rect", { x: zx, y: m.t, width: Math.max(0, m.l + pw - zx), height: ph, class: "fc-zone" }, svg);
   const zt = el("text", { x: zx + 8, y: m.t + 15, class: "axis-text" }, svg);
   zt.textContent = t("fcZone");
@@ -1633,100 +1786,145 @@ function drawFc() {
       tx.textContent = narrow ? String(yr) : `${q + 1}Q${String(yr).slice(2)}`;
     }
   }
-  // 전망 범위(가장 낮은~높은)와 중앙값 — 마지막 실제 값에서 시작
-  if (Q.length) {
-    const top = [`M${x(last.x).toFixed(1)},${y(last.v).toFixed(1)}`, ...Q.map(q => `L${x(q.x).toFixed(1)},${y(q.hi).toFixed(1)}`)];
-    const bot = [...Q].reverse().map(q => `L${x(q.x).toFixed(1)},${y(q.lo).toFixed(1)}`);
-    el("path", { d: top.join("") + bot.join("") + "Z", class: "fc-band" }, svg);
+  // 전망 범위: 정책금리는 띠(서로 겹치지 않음), 채권금리는 분기마다 세로 막대(계열끼리 조금씩 비켜 그림)
+  vis.forEach((s, si) => {
+    const last = s.act[s.act.length - 1], qs = s.q.filter(q => q.n);
+    if (!qs.length) return;
+    if (C.band) {
+      const top = [`M${x(last.x).toFixed(1)},${y(last.v).toFixed(1)}`, ...qs.map(q => `L${x(q.x).toFixed(1)},${y(q.hi).toFixed(1)}`)];
+      const bot = [...qs].reverse().map(q => `L${x(q.x).toFixed(1)},${y(q.lo).toFixed(1)}`);
+      const p = el("path", { d: top.join("") + bot.join("") + "Z" }, svg);
+      p.style.fill = `color-mix(in srgb, ${s.color} 16%, transparent)`;
+    } else {
+      const off = (si - (vis.length - 1) / 2) * 7;
+      for (const q of qs) {
+        const X = x(q.x) + off, wk = el("g", { "stroke-width": 1.5, opacity: 0.65 }, svg);
+        wk.style.stroke = s.color;
+        el("line", { x1: X, x2: X, y1: y(q.hi), y2: y(q.lo) }, wk);
+        el("line", { x1: X - 3, x2: X + 3, y1: y(q.hi), y2: y(q.hi) }, wk);
+        el("line", { x1: X - 3, x2: X + 3, y1: y(q.lo), y2: y(q.lo) }, wk);
+      }
+    }
+  });
+  for (const s of vis) {
+    let dA = "", py = 0;
+    s.act.forEach((a, i) => {
+      const X = x(a.x).toFixed(1), Y = y(a.v).toFixed(1);
+      dA += !i ? `M${X},${Y}` : s.step ? `L${X},${py}L${X},${Y}` : `L${X},${Y}`;
+      py = Y;
+    });
+    const pa = el("path", { d: dA, fill: "none", "stroke-width": s.step ? 2 : 1.6, "stroke-linejoin": "round" }, svg);
+    pa.style.stroke = s.color;
+    const last = s.act[s.act.length - 1], qm = s.q.filter(q => Number.isFinite(q.med));
+    if (qm.length) {
+      const pm = el("path", { d: `M${x(last.x)},${y(last.v)}` + qm.map(q => `L${x(q.x)},${y(q.med)}`).join(""), fill: "none", "stroke-width": 2, "stroke-dasharray": "5 4", "stroke-linejoin": "round" }, svg);
+      pm.style.stroke = s.color;
+      for (const q of qm) { const c = el("circle", { cx: x(q.x), cy: y(q.med), r: 4, "stroke-width": 2 }, svg); c.style.stroke = s.color; c.style.fill = "var(--surface)"; }
+    }
+    const cl = el("circle", { cx: x(last.x), cy: y(last.v), r: 3.5 }, svg);
+    cl.style.fill = s.color;
   }
-  let dA = "", py = 0;
-  act.forEach((a, i) => { const X = x(a.x).toFixed(1), Y = y(a.v).toFixed(1); dA += i ? `L${X},${py}L${X},${Y}` : `M${X},${Y}`; py = Y; });
-  const pa = el("path", { d: dA, fill: "none", "stroke-width": 2, "stroke-linejoin": "round" }, svg);
-  pa.style.stroke = "var(--s1)";
-  if (Q.length) {
-    const pm = el("path", { d: `M${x(last.x)},${y(last.v)}` + Q.map(q => `L${x(q.x)},${y(q.med)}`).join(""), fill: "none", "stroke-width": 2, "stroke-dasharray": "5 4", "stroke-linejoin": "round" }, svg);
-    pm.style.stroke = "var(--s1)";
-    for (const q of Q) { const c = el("circle", { cx: x(q.x), cy: y(q.med), r: 4, "stroke-width": 2 }, svg); c.style.stroke = "var(--s1)"; c.style.fill = "var(--surface)"; }
+  // 오른쪽 끝 이름표(1페이지처럼 겹치지 않게 위아래로 밀어냄): 마지막 전망 중앙값, 없으면 마지막 실제 값
+  if (!narrow) {
+    const items = vis.map(s => {
+      const qm = s.q.filter(q => Number.isFinite(q.med)), e = qm.length ? { x: qm[qm.length - 1].x, v: qm[qm.length - 1].med } : s.act[s.act.length - 1];
+      return { s, xe: x(e.x), y0: y(e.v), v: e.v };
+    }).sort((p, q) => p.y0 - q.y0);
+    const gap = 15;
+    items.forEach((it, i) => { it.y = i ? Math.max(it.y0, items[i - 1].y + gap) : it.y0; });
+    if (items.length) {
+      const over = items[items.length - 1].y - (m.t + ph);
+      if (over > 0) items.forEach(it => { it.y -= over; });
+      for (let i = items.length - 2; i >= 0; i--) items[i].y = Math.min(items[i].y, items[i + 1].y - gap);
+    }
+    const x0 = m.l + pw;
+    const lg = el("g", {}, svg);
+    for (const it of items) {
+      el("path", { d: `M${it.xe + 7},${it.y0}L${x0 + 14},${it.y}L${x0 + 19},${it.y}`, fill: "none", stroke: "var(--axis)", "stroke-width": 1 }, lg);
+      const tx = el("text", { x: x0 + 23, y: it.y + 4, class: "end-text" }, lg);
+      tx.textContent = `${it.s.name} ${pct(it.v)}%`;
+    }
   }
-  const cl = el("circle", { cx: x(last.x), cy: y(last.v), r: 4 }, svg);
-  cl.style.fill = "var(--s1)";
-  // 글자 표시는 두 곳만: 지금 값, 마지막 분기 중앙값
-  const l1 = el("text", { x: x(last.x) - 8, y: y(last.v) - 10, "text-anchor": "end", class: "fc-lab" }, svg);
-  l1.textContent = pct(last.v) + "%";
-  if (Q.length && !narrow) {
-    const qe = Q[Q.length - 1];
-    const l2 = el("text", { x: x(qe.x) + 8, y: y(qe.med) + 4, class: "fc-lab" }, svg);
-    l2.textContent = pct(qe.med) + "%";
-  }
-  // 마우스·화살표로 볼 지점: 실제 값이 바뀐 날 + 처음·마지막 + 분기말 전망
+  // 마우스·화살표로 볼 지점: 실제 구간은 약 2주 간격 + 마지막 날, 전망 구간은 분기말
+  const ref = vis.reduce((p, s) => (s.act.length > p.act.length ? s : p), vis[0]).act;
   const stops = [];
-  act.forEach((a, i) => { if (i === 0 || i === act.length - 1 || a.v !== act[i - 1].v) stops.push({ kind: "a", ...a }); });
-  Q.forEach(q => stops.push({ kind: "q", ...q }));
+  ref.forEach((a, i) => { if (i % 10 === 0 || i === ref.length - 1) stops.push({ kind: "a", x: a.x, d: a.d }); });
+  FC.quarters.forEach((label, i) => { if (vis.some(s => s.q[i].n)) stops.push({ kind: "q", i, label, x: ms10(FC.quarter_end[i]) }); });
   const hover = el("g", {}, svg);
   const hit = el("rect", { x: m.l, y: 0, width: pw, height: H, fill: "transparent" }, svg);
   hit.style.cursor = "crosshair";
   hit.addEventListener("pointermove", e => {
     const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * (W / r.width);
+    let best = null, bd = Infinity;
     if (px <= zx) {
-      let j = 0, best = Infinity;
-      act.forEach((a, i) => { const dd = Math.abs(x(a.x) - px); if (dd < best) { best = dd; j = i; } });
-      fcHover({ kind: "a", ...act[j] });
+      for (const a of ref) { const dd = Math.abs(x(a.x) - px); if (dd < bd) { bd = dd; best = { kind: "a", x: a.x, d: a.d }; } }
     } else {
-      let j = 0, best = Infinity;
-      Q.forEach((q, i) => { const dd = Math.abs(x(q.x) - px); if (dd < best) { best = dd; j = i; } });
-      if (Q.length) fcHover({ kind: "q", ...Q[j] });
+      for (const st of stops) if (st.kind === "q") { const dd = Math.abs(x(st.x) - px); if (dd < bd) { bd = dd; best = st; } }
     }
+    fcHover(id, best);
   });
-  hit.addEventListener("pointerleave", () => fcHover(null));
-  FCG = { x, y, m, W, H, hover, stops, cur: null };
+  hit.addEventListener("pointerleave", () => fcHover(id, null));
+  C.G = { x, y, m, W, H, vis, hover, stops, cur: null };
 }
-function fcHover(p) {
-  if (!FCG) return;
-  FCG.hover.textContent = "";
-  FCG.cur = p;
-  if (!p) { fcTip.hidden = true; return; }
-  const X = FCG.x(p.x);
-  el("line", { x1: X, x2: X, y1: FCG.m.t, y2: FCG.H - FCG.m.b, stroke: "var(--axis)", "stroke-width": 1 }, FCG.hover);
-  const dot = el("circle", { cx: X, cy: FCG.y(p.kind === "a" ? p.v : p.med), r: 5, "stroke-width": 2 }, FCG.hover);
-  dot.style.fill = "var(--s1)"; dot.style.stroke = "var(--surface)";
-  fcTip.textContent = "";
+function fcHover(id, p) {
+  const C = FCC[id], G = C.G;
+  if (!G) return;
+  G.hover.textContent = "";
+  G.cur = p;
+  const tip = C.tip;
+  if (!p) { tip.hidden = true; return; }
+  const X = G.x(p.x);
+  el("line", { x1: X, x2: X, y1: G.m.t, y2: G.H - G.m.b, stroke: "var(--axis)", "stroke-width": 1 }, G.hover);
+  tip.textContent = "";
   const head = document.createElement("div"); head.className = "tip-head";
+  tip.appendChild(head);
   const row = (sw, val, label) => {
     const r = document.createElement("div"); r.className = "tip-row";
     const k = document.createElement("span"); k.className = "k"; if (sw) k.style.background = sw;
     const b = document.createElement("b"); b.textContent = val;
     const n = document.createElement("span"); n.textContent = label;
-    r.append(k, b, n); fcTip.appendChild(r);
+    r.append(k, b, n); tip.appendChild(r);
   };
+  const dot = (v, color) => { const c = el("circle", { cx: X, cy: G.y(v), r: 4.5, "stroke-width": 2 }, G.hover); c.style.fill = color; c.style.stroke = "var(--surface)"; };
   if (p.kind === "a") {
     head.textContent = iso(p.d).replaceAll("-", ".");
-    fcTip.appendChild(head);
-    row("var(--s1)", pct(p.v), t("fcTipActual"));
+    for (const s of G.vis) { const a = valueAt(s.act, p.x); if (!a) continue; row(s.color, pct(a.v), s.name); dot(a.v, s.color); }
   } else {
     head.textContent = t("fcTipQ", p.label);
-    fcTip.appendChild(head);
-    row("var(--s1)", pct(p.med), t("fcTipMed"));
-    row("color-mix(in srgb, var(--s1) 30%, transparent)", `${pct(p.lo)}–${pct(p.hi)}`, t("fcTipRange"));
-    for (const k of Object.keys(p.lv).sort((a, b) => b - a)) row("", k, `${t("fcTipN", p.lv[k].length)} · ${p.lv[k].join(", ")}`);
+    for (const s of G.vis) {
+      const q = s.q[p.i];
+      if (!q || !q.n) continue;
+      row(s.color, Number.isFinite(q.med) ? pct(q.med) : "–", s.name);
+      row("", `${pct(q.lo)}–${pct(q.hi)}`, `${t("fcTipRange")} · ${t("fcTipN", q.n)}`);
+      if (Number.isFinite(q.med)) dot(q.med, s.color);
+      if (G.vis.length === 1) for (const k of Object.keys(q.lv).sort((a, b) => b - a)) row("", k, `${t("fcTipN", q.lv[k].length)} · ${q.lv[k].join(", ")}`);
+    }
   }
-  fcTip.hidden = false;
-  const scale = fcChart.clientWidth / FCG.W, tw = fcTip.offsetWidth;
+  tip.hidden = false;
+  const box = $(C.box), scale = box.clientWidth / G.W, tw = tip.offsetWidth;
   let left = X * scale + 14;
-  if (left + tw > fcChart.clientWidth) left = X * scale - tw - 14;
-  fcTip.style.left = Math.max(0, left) + "px";
-  fcTip.style.top = FCG.m.t + "px";
+  if (left + tw > box.clientWidth) left = X * scale - tw - 14;
+  tip.style.left = Math.max(0, left) + "px";
+  tip.style.top = G.m.t + "px";
 }
-fcChart.addEventListener("keydown", e => {
-  if (!FCG || !FCG.stops.length) return;
-  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-    e.preventDefault();
-    const s = FCG.stops, i = FCG.cur ? s.findIndex(p => p.x === FCG.cur.x && p.kind === FCG.cur.kind) : -1;
-    const j = Math.max(0, Math.min(s.length - 1, (i < 0 ? s.length - 1 : i) + (e.key === "ArrowRight" ? 1 : -1)));
-    fcHover(s[j]);
-  } else if (e.key === "Escape") fcHover(null);
-});
-fcChart.addEventListener("focus", () => { if (FCG && !FCG.cur) fcHover(FCG.stops.find(p => p.kind === "q") || FCG.stops[FCG.stops.length - 1]); });
-fcChart.addEventListener("blur", () => fcHover(null));
+for (const id of ["pol", "bond"]) {
+  const box = $(FCC[id].box);
+  box.addEventListener("keydown", e => {
+    const G = FCC[id].G;
+    if (!G || !G.stops.length) return;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      const st = G.stops, i = G.cur ? st.findIndex(p => p.kind === G.cur.kind && p.x === G.cur.x) : -1;
+      fcHover(id, st[Math.max(0, Math.min(st.length - 1, (i < 0 ? st.length - 1 : i) + (e.key === "ArrowRight" ? 1 : -1)))]);
+    } else if (e.key === "Escape") fcHover(id, null);
+  });
+  box.addEventListener("focus", () => { const G = FCC[id].G; if (G && !G.cur) fcHover(id, G.stops.find(p => p.kind === "q") || G.stops[G.stops.length - 1]); });
+  box.addEventListener("blur", () => fcHover(id, null));
+  if ("ResizeObserver" in window) {
+    let w0 = 0;
+    new ResizeObserver(() => { const w = box.clientWidth; if (Math.abs(w - w0) > 1) { w0 = w; if (FC && D && !$("page-fc").hidden) drawFcChart(id); } }).observe(box);
+  }
+}
 
 // ---------- 표
 function cell(tr, tag, text, cls) { const c = document.createElement(tag); if (text != null) c.textContent = text; if (cls) c.className = cls; tr.appendChild(c); return c; }
@@ -1739,50 +1937,57 @@ function srcCell(tr, src) {
 }
 function nameCell(tr, r) {
   const th = cell(tr, "th", instName(r));
+  if (r.survey) { const g = document.createElement("span"); g.className = "tagx"; g.textContent = t("fcSurveyTag"); th.appendChild(g); }
   if (r.who) { const w = document.createElement("span"); w.className = "who"; w.textContent = r.who; th.appendChild(w); }
 }
-function fcTables() {
-  const now = lastOf("base").v;
-  // 기준금리 경로
-  const tb = $("fc-base");
+function pathTable(tid, rows, groups, now) {
+  const tb = $(tid);
   tb.textContent = "";
   const hr = tb.createTHead().insertRow();
-  [t("fcInst"), t("fcDate"), ...FC.quarters, t("fcTerm"), t("fcNote"), t("fcSrc")].forEach((h, i) => cell(hr, "th", h, i === 0 ? "" : i >= FC.quarters.length + 3 ? "l" : ""));
+  [t("fcInst"), t("fcDate"), ...FC.quarters, t("fcTerm"), t("fcNote"), t("fcSrc")].forEach((h, i) => cell(hr, "th", h, i >= FC.quarters.length + 3 ? "l" : ""));
   const body = tb.createTBody();
-  for (const [g, label] of [["dom", t("fcDom")], ["for", t("fcFor")]]) {
+  for (const [g, label] of groups) {
+    const list = rows.filter(r => r.g === g);
+    if (!list.length) continue;
     const gr = body.insertRow(); gr.className = "grp";
     const gh = cell(gr, "th", label); gh.colSpan = FC.quarters.length + 5;
-    for (const r of FC.base.filter(b => b.g === g)) {
+    for (const r of list) {
       const tr = body.insertRow();
       nameCell(tr, r);
       cell(tr, "td", md(r.date));
-      r.path.forEach(v => cell(tr, "td", v == null ? "–" : pct(v), v == null ? "na" : v > now + 1e-9 ? "up" : ""));
+      r.path.forEach(v => cell(tr, "td", v == null ? "–" : pct(v), v == null ? "na" : now != null && v > now + 1e-9 ? "up" : ""));
       cell(tr, "td", r.term);
       cell(tr, "td", r.note, "note");
       srcCell(tr, r.src);
     }
   }
+  const st = pathStats(rows);
   const sm = body.insertRow(); sm.className = "sum";
   cell(sm, "th", t("fcMedRow")); cell(sm, "td", "");
-  FC.quarters.forEach((_, i) => { const st = fcStats(i); cell(sm, "td", st.n ? pct(st.med) : "–"); });
+  st.forEach(q => cell(sm, "td", q.n ? pct(q.med) : "–"));
   cell(sm, "td", ""); cell(sm, "td", ""); cell(sm, "td", "");
   const sn = body.insertRow();
   cell(sn, "th", t("fcNRow")); cell(sn, "td", "");
-  FC.quarters.forEach((_, i) => cell(sn, "td", String(fcStats(i).n)));
+  st.forEach(q => cell(sn, "td", String(q.n)));
   cell(sn, "td", ""); cell(sn, "td", ""); cell(sn, "td", "");
+}
+function fcTables() {
+  pathTable("fc-base", FC.base, [["dom", t("fcDom")], ["for", t("fcFor")]], lastIn(D, "base").v);
+  const fh = lastIn(US, "fed_hi");
+  pathTable("fc-fed", FC.fed || [], [["for", t("fcFor")], ["off", t("fcOff")]], fh ? fh.v : null);
 
   // 국고채
-  const k3 = lastOf("ktb3"), k10 = lastOf("ktb10");
+  const k3 = lastIn(D, "ktb3"), k10 = lastIn(D, "ktb10");
   $("fc-ktb-now").textContent = k3 && k10 ? t("fcKtbNow", k3.v.toFixed(3), k10.v.toFixed(3), md(iso(k3.d))) : "";
   const kt = $("fc-ktb");
   kt.textContent = "";
   const th = kt.createTHead();
   const h1 = th.insertRow(), h2 = th.insertRow();
-  const span2 = (txt, cls) => { const c = cell(h1, "th", txt, cls); c.rowSpan = 2; return c; };
-  span2(t("fcInst")); span2(t("fcDate")); span2(t("fcBasis"), "l");
+  const span2 = (row, txt, cls) => { const c = cell(row, "th", txt, cls); c.rowSpan = 2; return c; };
+  span2(h1, t("fcInst")); span2(h1, t("fcDate")); span2(h1, t("fcBasis"), "l");
   const g3 = cell(h1, "th", t("fcY3"), "grp"); g3.colSpan = 4;
   const g10 = cell(h1, "th", t("fcY10"), "grp"); g10.colSpan = 4;
-  span2(t("fcNote"), "l"); span2(t("fcSrc"), "l");
+  span2(h1, t("fcNote"), "l"); span2(h1, t("fcSrc"), "l");
   for (let j = 0; j < 2; j++) ["1Q27", "4Q27", t("fcAvg"), t("fcRng")].forEach(h => cell(h2, "th", h));
   const kb = kt.createTBody();
   const rng = o => o.lo != null ? `${pct(o.lo)}–${pct(o.hi)}` : o.fair != null ? t("fcFair", pct(o.fair)) : "–";
@@ -1790,11 +1995,31 @@ function fcTables() {
     const tr = kb.insertRow();
     nameCell(tr, r);
     cell(tr, "td", md(r.date));
-    cell(tr, "td", LANG === "ko" ? r.basis : (BASIS_NAME[r.basis] && BASIS_NAME[r.basis][LANG]) || r.basis, "l");
+    cell(tr, "td", basisName(r.basis), "l");
     for (const o of [r.y3 || {}, r.y10 || {}]) {
       for (const k of ["q1", "q4", "avg"]) cell(tr, "td", o[k] == null ? "–" : pct(o[k]), o[k] == null ? "na" : "");
       const rv = rng(o); cell(tr, "td", rv, rv === "–" ? "na" : "");
     }
+    cell(tr, "td", r.note, "note");
+    srcCell(tr, r.src);
+  }
+
+  // 미국채 10년
+  const u2 = lastIn(US, "ust2"), u10 = lastIn(US, "ust10");
+  $("fc-ust-now").textContent = u2 && u10 ? t("fcUstNow", pct(u2.v), pct(u10.v), md(iso(u10.d))) : "";
+  const ut = $("fc-ust");
+  ut.textContent = "";
+  const UQ = ["4Q26", "2Q27", "4Q27"];
+  const uh = ut.createTHead().insertRow();
+  [t("fcInst"), t("fcDate"), t("fcBasis"), ...UQ, t("fcRngAt"), t("fcNote"), t("fcSrc")].forEach((h, i) => cell(uh, "th", h, i === 2 || i >= UQ.length + 4 ? "l" : ""));
+  const ub = ut.createTBody();
+  for (const r of FC.ust || []) {
+    const tr = ub.insertRow();
+    nameCell(tr, r);
+    cell(tr, "td", md(r.date));
+    cell(tr, "td", basisName(r.basis), "l");
+    UQ.forEach(q => { const v = r.q && r.q[q]; cell(tr, "td", v == null ? "–" : pct(v), v == null ? "na" : ""); });
+    cell(tr, "td", r.lo != null ? `${pct(r.lo)}–${pct(r.hi)}${r.at ? ` (${r.at})` : ""}` : "–", r.lo != null ? "" : "na");
     cell(tr, "td", r.note, "note");
     srcCell(tr, r.src);
   }
@@ -1811,10 +2036,6 @@ function fcTables() {
   };
   (FC.survey || []).forEach(sv => li(instName(sv), sv.date, sv.text, sv.u));
   if (FC.dots) li(LANG === "ko" ? "한국은행 점도표" : LANG === "ja" ? "韓国銀行ドットチャート" : LANG === "zh" ? "韩国央行点阵图" : "BOK dot plot", "", FC.dots.text, FC.dots.u);
-}
-if ("ResizeObserver" in window) {
-  let fw = 0;
-  new ResizeObserver(() => { const w = fcChart.clientWidth; if (Math.abs(w - fw) > 1) { fw = w; if (FC && D && !$("page-fc").hidden) drawFc(); } }).observe(fcChart);
 }
 
 // ================================================================ PAGE 2

@@ -46,6 +46,11 @@ jobs:
           ECOS_KEY_SOURCES: "secret=${{ secrets.ECOS_API_KEY != '' }}, variable=${{ vars.ECOS_API_KEY != '' }}"
         run: python scripts/fetch_rates.py ${{ inputs.full && '--full' || '' }}
 
+      # 미국 금리(연방기금 목표범위·미국채 2·10년): FRED, 원자료 미 연준 H.15(공공영역). 금리 전망 탭에서 씀.
+      - name: 미국 금리 수집 (FRED)
+        continue-on-error: true
+        run: python scripts/fetch_us.py
+
       # 뉴스: 연합뉴스 RSS만(비상업·개인 용도 허용, 이 사이트는 광고 없는 비상업). 제목·링크·시각만 저장.
       - name: 뉴스 수집 (연합뉴스 RSS)
         continue-on-error: true
