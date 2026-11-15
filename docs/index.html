@@ -461,6 +461,19 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .fc-list a { color: var(--accent); text-decoration: none; }
 .fc-list li:empty { display: none; }
 .fc-notes { font-size: 12.5px; color: var(--muted); }
+
+/* ---------- 오늘의 브리핑(환율 조회 /api/brief, 한국어 화면에서만) */
+.brief { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 12px 16px; display: grid; gap: 6px; }
+.brief-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.brief-tag { font-size: 11.5px; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 2px 9px; align-self: center; }
+.brief-t { font-size: 16px; font-weight: 600; }
+.brief-time { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.brief-l { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: 13.5px; color: var(--ink-2); }
+.brief-links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
+.brief-links:empty { display: none; }
+.brief-links a { color: var(--ink-2); }
+.brief-links .s { color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+.brief-note { margin: 0; font-size: 11.5px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -504,6 +517,12 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
     <div class="page-head">
       <h1 data-i18n="h1Rates">금리 추이</h1>
       <p class="lede" data-i18n="ledeRates">한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.</p>
+    </div>
+    <div class="brief" id="brief" hidden aria-live="polite">
+      <div class="brief-h"><span class="brief-tag">오늘의 브리핑</span><b class="brief-t" id="briefT"></b><span class="brief-time" id="briefTime"></span></div>
+      <ul class="brief-l" id="briefL"></ul>
+      <div class="brief-links" id="briefLinks"></div>
+      <p class="brief-note">시세를 정해 둔 규칙으로 문장에 옮긴 자동 요약입니다(사람·AI가 쓴 글 아님) · 투자 권유가 아닙니다 · <span id="briefSrc"></span></p>
     </div>
 
     <div class="toolbar">
@@ -1582,6 +1601,32 @@ async function loadRates() {
 }
 
 
+// ---------- 오늘의 브리핑: 환율 조회의 /api/brief(같은 주소 아래 /rates/ 에서만 받힘). 문장이 한국어라 한국어 화면에서만 보인다
+async function loadBrief() {
+  try {
+    const r = await fetch("/api/brief", { cache: "no-store" });
+    if (!r.ok) return;
+    const j = await r.json();
+    if (!j || !j.lines || !j.lines.length) return;
+    $("briefT").textContent = j.title || "";
+    $("briefTime").textContent = (j.updated || "").slice(5).replace("-", "/").replace("T", " ") + " 기준";
+    const L = $("briefL"); L.textContent = "";
+    j.lines.forEach(x => { const li = document.createElement("li"); li.textContent = x.text; L.appendChild(li); });
+    const K = $("briefLinks"); K.textContent = "";
+    (j.links || []).forEach(x => {
+      if (!/^https?:\/\//.test(x.u)) return;
+      const a = document.createElement("a"); a.href = x.u; a.target = "_blank"; a.rel = "noopener"; a.textContent = x.t;
+      const sp = document.createElement("span"); sp.className = "s"; sp.textContent = `${x.s} ${x.at}`;
+      const w = document.createElement("span"); w.append(a, sp); K.appendChild(w);
+    });
+    $("briefSrc").textContent = "자료: " + (j.src || "");
+    $("brief").hidden = LANG !== "ko";
+    $("brief").dataset.ok = "1";
+  } catch { /* 예비 주소 등 /api/brief 가 없는 곳에서는 안 보임 */ }
+}
+loadBrief();
+setInterval(() => { if (!document.hidden && !$("page-rates").hidden) loadBrief(); }, 60000);
+
 // ================================================================ PAGE 3: 금리 전망
 // data/forecast.json(손으로 고치는 파일): 기관이 공개한 한국·미국 기준금리 경로, 국고채·미국채 전망, 설문·점도표.
 // data/us.csv: 미국 금리 실제 값(FRED, 원자료 미 연준 H.15) — scripts/fetch_us.py 가 매시 갱신.
@@ -2290,6 +2335,7 @@ $("lang").addEventListener("change", e => {
   renderRates();
   renderNews();
   renderFc();
+  if ($("brief").dataset.ok) $("brief").hidden = LANG !== "ko";
 });
 boot();
 </script>
