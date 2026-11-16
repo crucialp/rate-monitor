@@ -123,6 +123,8 @@ def write_csv(table: dict[str, dict[str, str]]) -> str | None:
         w.writerow(["date"] + COLS)
         w.writerows(out)
     tmp.replace(CSV_PATH)
+    if last_base:   # 지금 기준금리: 브리핑(환율 조회 /api/brief?k=rate)이 meta.json 에서 읽는다
+        update_meta(base_last=float(last_base))
     return out[-1][0] if out else None
 
 

@@ -1746,6 +1746,11 @@ function renderFc() {
   for (const id of ["pol", "bond"]) { fcChips(id); drawFcChart(id); }
   fcTables();
 }
+// 다음 회의: 일정표에서 오늘(한국 시간) 이후 첫 날짜, 없으면 예전 칸
+function nextMeet(list, old) {
+  const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  return (list || []).find((d) => d >= today) || old || "";
+}
 function fcTiles() {
   const kr = lastIn(D, "base"), k3 = lastIn(D, "ktb3"), lo = lastIn(US, "fed_lo"), hi = lastIn(US, "fed_hi"), u10 = lastIn(US, "ust10");
   const withNext = FC.base.filter(r => r.path[0] != null), up = withNext.filter(r => r.path[0] > kr.v + 1e-9).length;
@@ -1755,10 +1760,10 @@ function fcTiles() {
   FC.ktb.forEach(r => { for (const k of ["q1", "q4", "avg", "lo", "hi", "fair"]) if (r.y3 && r.y3[k] != null) y3.push(r.y3[k]); });
   const u4 = ustStats()[4];
   const tiles = [
-    [t("fcNowK"), pct(kr.v) + "%", t("fcNowS", md(FC.next_mpc))],
+    [t("fcNowK"), pct(kr.v) + "%", t("fcNowS", md(nextMeet(FC.mpc_dates, FC.next_mpc)))],
     [t("fcNextK"), t("fcNextV", up, withNext.length), t("fcNextS")],
     [t("fcEndK"), pct(end.med) + "%", t("fcEndS", pct(end.lo), pct(end.hi), end.n)],
-    [t("fcUsK"), lo && hi ? `${pct(lo.v)}~${pct(hi.v)}%` : "–", t("fcUsS", FC.next_fomc ? md(FC.next_fomc) : "–", fedUp, fedNext.length)],
+    [t("fcUsK"), lo && hi ? `${pct(lo.v)}~${pct(hi.v)}%` : "–", t("fcUsS", nextMeet(FC.fomc_dates, FC.next_fomc) ? md(nextMeet(FC.fomc_dates, FC.next_fomc)) : "–", fedUp, fedNext.length)],
     [t("fcKtbK"), k3 ? k3.v.toFixed(3) + "%" : "–", t("fcKtbS", k3 ? md(iso(k3.d)) : "", pct(Math.min(...y3)), pct(Math.max(...y3)))],
     [t("fcU10K"), u10 ? pct(u10.v) + "%" : "–", u4 && u4.n ? t("fcU10S", u10 ? md(iso(u10.d)) : "", pct(u4.lo), pct(u4.hi)) : ""],
   ];
