@@ -469,6 +469,11 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .brief-t { font-size: 16px; font-weight: 600; }
 .brief-time { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .brief-l { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; font-size: 13.5px; color: var(--ink-2); }
+.brief-fh { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+.brief-f { margin: 0; padding-left: 1.6em; display: grid; gap: 3px; font-size: 13.5px; color: var(--ink-2); }
+.brief-f:empty { display: none; }
+.brief-f .side { font-size: 12px; font-weight: 600; margin-left: 6px; white-space: nowrap; }
+.brief-f .side.up { color: #d6453d; } .brief-f .side.down { color: var(--accent); }
 .brief-links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
 .brief-links:empty { display: none; }
 .brief-links a { color: var(--ink-2); }
@@ -521,6 +526,8 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
     <div class="brief" id="brief" hidden aria-live="polite">
       <div class="brief-h"><span class="brief-tag">오늘의 브리핑</span><b class="brief-t" id="briefT"></b><span class="brief-time" id="briefTime"></span></div>
       <ul class="brief-l" id="briefL"></ul>
+      <div class="brief-fh" id="briefFH" hidden></div>
+      <ol class="brief-f" id="briefF"></ol>
       <div class="brief-links" id="briefLinks"></div>
       <p class="brief-note">시세를 정해 둔 규칙으로 문장에 옮긴 자동 요약입니다(사람·AI가 쓴 글 아님). 원인은 같은 시간에 함께 움직인 지표로 추정한 것이라 확정된 원인이 아닙니다 · 투자 권유가 아닙니다 · <span id="briefSrc"></span></p>
     </div>
@@ -1612,6 +1619,12 @@ async function loadBrief() {
     $("briefTime").textContent = (j.updated || "").slice(5).replace("-", "/").replace("T", " ") + " 기준";
     const L = $("briefL"); L.textContent = "";
     j.lines.forEach(x => { const li = document.createElement("li"); li.textContent = x.text; L.appendChild(li); });
+    const FL = $("briefF"); FL.textContent = ""; $("briefFH").hidden = !(j.factors && j.factors.length); $("briefFH").textContent = j.factorHead || "";
+    (j.factors || []).forEach(x => {
+      const li = document.createElement("li"); li.append(x.text);
+      const sp = document.createElement("span"); sp.className = "side " + (x.side === "up" ? "up" : "down"); sp.textContent = x.side === "up" ? "(상승 요인)" : "(하락 요인)";
+      li.appendChild(sp); FL.appendChild(li);
+    });
     const K = $("briefLinks"); K.textContent = "";
     (j.links || []).forEach(x => {
       if (!/^https?:\/\//.test(x.u)) return;
