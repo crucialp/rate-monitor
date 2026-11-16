@@ -1601,10 +1601,10 @@ async function loadRates() {
 }
 
 
-// ---------- 오늘의 브리핑: 환율 조회의 /api/brief(같은 주소 아래 /rates/ 에서만 받힘). 문장이 한국어라 한국어 화면에서만 보인다
+// ---------- 오늘의 브리핑(금리만): 환율 조회의 /api/brief?k=rate(같은 주소 아래 /rates/ 에서만 받힘). 문장이 한국어라 한국어 화면에서만 보인다
 async function loadBrief() {
   try {
-    const r = await fetch("/api/brief", { cache: "no-store" });
+    const r = await fetch("/api/brief?k=rate", { cache: "no-store" });
     if (!r.ok) return;
     const j = await r.json();
     if (!j || !j.lines || !j.lines.length) return;
