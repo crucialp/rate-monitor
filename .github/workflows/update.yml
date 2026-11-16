@@ -30,11 +30,11 @@ jobs:
     timeout-minutes: 25
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy2.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -69,11 +69,23 @@ jobs:
             git push
           fi
 
-      - uses: actions/configure-pages@v5
+      # GitHub Pages(예비 주소). 가끔 GitHub 쪽에서 "artifact 를 못 찾음"(Fetching artifact metadata failed)으로
+      # 실패해서, 1분 쉬고 한 번 더 한다.
+      - uses: actions/configure-pages@v6
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: docs
+          include-hidden-files: true   # .nojekyll 포함(v5 부터 점 파일은 기본 제외)
 
       - id: deploy
-        uses: actions/deploy-pages@v4
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+
+      - name: 배포 재시도 전 대기
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 60
+
+      - id: deploy2
+        if: steps.deploy.outcome == 'failure'
+        uses: actions/deploy-pages@v5
