@@ -474,6 +474,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .brief-f:empty { display: none; }
 .brief-f .side { font-size: 12px; font-weight: 600; margin-left: 6px; white-space: nowrap; }
 .brief-f .side.up { color: #d6453d; } .brief-f .side.down { color: var(--accent); }
+.brief-f a.q { color: var(--ink-2); } .brief-f .s { color: var(--muted); font-size: 11.5px; margin-left: 5px; white-space: nowrap; }
 .brief-links { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; }
 .brief-links:empty { display: none; }
 .brief-links a { color: var(--ink-2); }
@@ -529,7 +530,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
       <div class="brief-fh" id="briefFH" hidden></div>
       <ol class="brief-f" id="briefF"></ol>
       <div class="brief-links" id="briefLinks"></div>
-      <p class="brief-note">시세를 정해 둔 규칙으로 문장에 옮긴 자동 요약입니다(사람·AI가 쓴 글 아님). 원인은 같은 시간에 함께 움직인 지표로 추정한 것이라 확정된 원인이 아닙니다 · 투자 권유가 아닙니다 · <span id="briefSrc"></span></p>
+      <p class="brief-note">시세를 정해 둔 규칙으로 문장에 옮긴 자동 요약입니다(사람·AI가 쓴 글 아님). 원인은 같은 시간에 함께 움직인 지표로 추정한 것이라 확정된 원인이 아닙니다 · (외신)은 해외 매체 속보 제목(최근 8시간)을 낱말 규칙으로 분류한 것이라 오보·미확인 보도가 섞일 수 있습니다 · 투자 권유가 아닙니다 · <span id="briefSrc"></span></p>
     </div>
 
     <div class="toolbar">
@@ -1622,6 +1623,11 @@ async function loadBrief() {
     const FL = $("briefF"); FL.textContent = ""; $("briefFH").hidden = !(j.factors && j.factors.length); $("briefFH").textContent = j.factorHead || "";
     (j.factors || []).forEach(x => {
       const li = document.createElement("li"); li.append(x.text);
+      if (x.q && /^https?:\/\//.test(x.u)) {   // (외신): 영어 제목 = 원문 링크, 매체·시각은 흐리게
+        const qa = document.createElement("a"); qa.href = x.u; qa.target = "_blank"; qa.rel = "noopener"; qa.className = "q"; qa.textContent = `“${x.q}”`;
+        const qs = document.createElement("span"); qs.className = "s"; qs.textContent = x.src || "";
+        li.append(" — ", qa, qs);
+      }
       const sp = document.createElement("span"); sp.className = "side " + (x.side === "up" ? "up" : "down"); sp.textContent = x.side === "up" ? "(상승 요인)" : "(하락 요인)";
       li.appendChild(sp); FL.appendChild(li);
     });
