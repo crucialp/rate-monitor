@@ -1,8 +1,8 @@
 {
- "news_updated": "2026-11-17T16:07+09:00",
- "news_count": 81,
- "rates_updated": "2026-11-17T16:07+09:00",
- "rates_last_date": "20261116",
+ "news_updated": "2026-11-17T17:06+09:00",
+ "news_count": 85,
+ "rates_updated": "2026-11-17T17:06+09:00",
+ "rates_last_date": "20261117",
  "series": {
   "base": "기준금리",
   "call": "콜금리(1일)",
