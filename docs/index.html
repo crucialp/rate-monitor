@@ -491,8 +491,8 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .sitebar a[aria-current=page]{background:#fff;color:#16181d;font-weight:600}
 .sitebar a:focus-visible{outline:2px solid #7ea2ff;outline-offset:2px}
 </style>
-<nav class="sitebar" aria-label="사이트"><div class="sitebar-in"><a href="/" id="sb-fx" data-i18n="siteFx">환율 조회</a><a href="/rates/" id="sb-rates" aria-current="page" data-i18n="siteRates">금리 모니터</a><a href="/community/" id="sb-com" data-i18n="siteCom">커뮤니티</a><a href="/contact/" id="sb-ask" data-i18n="siteAsk">문의</a></div></nav>
-<script>/* 환율 조회 주소(/rates/) 밖(예비 주소)에서 열리면 환율 조회는 본 주소로, 금리 모니터는 지금 주소로 */try{if(!/^\/rates(\/|$)/.test(location.pathname)){document.getElementById("sb-fx").href="https://fx-monitor.pages.dev/";document.getElementById("sb-rates").href=location.pathname;document.getElementById("sb-com").href="https://fx-monitor.pages.dev/community/";document.getElementById("sb-ask").href="https://fx-monitor.pages.dev/contact/"}}catch(e){}</script>
+<nav class="sitebar" aria-label="사이트"><div class="sitebar-in"><a href="/" id="sb-fx" data-i18n="siteFx">환율 조회</a><a href="/rates/" id="sb-rates" aria-current="page" data-i18n="siteRates">금리 모니터</a><a href="/contact/" id="sb-ask" data-i18n="siteAsk">문의</a></div></nav>
+<script>/* 환율 조회 주소(/rates/) 밖(예비 주소)에서 열리면 환율 조회는 본 주소로, 금리 모니터는 지금 주소로 */try{if(!/^\/rates(\/|$)/.test(location.pathname)){document.getElementById("sb-fx").href="https://fx-monitor.pages.dev/";document.getElementById("sb-rates").href=location.pathname;document.getElementById("sb-ask").href="https://fx-monitor.pages.dev/contact/"}}catch(e){}</script>
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
