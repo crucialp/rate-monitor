@@ -491,7 +491,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 .sitebar a[aria-current=page]{background:#fff;color:#16181d;font-weight:600}
 .sitebar a:focus-visible{outline:2px solid #7ea2ff;outline-offset:2px}
 </style>
-<nav class="sitebar" aria-label="사이트"><div class="sitebar-in"><a href="/" id="sb-fx" data-i18n="siteFx">환율 조회</a><a href="/rates/" id="sb-rates" aria-current="page" data-i18n="siteRates">금리 모니터</a><a href="/contact/" id="sb-ask" data-i18n="siteAsk">문의</a></div></nav>
+<nav class="sitebar" aria-label="사이트"><div class="sitebar-in"><a href="/" id="sb-fx" data-i18n="siteFx">환율 조회</a><a href="/rates/" id="sb-rates" aria-current="page" data-i18n="siteRates">금리 모니터</a><a href="/contact/" id="sb-ask" data-i18n="siteAsk">문의·건의사항</a></div></nav>
 <script>/* 환율 조회 주소(/rates/) 밖(예비 주소)에서 열리면 환율 조회는 본 주소로, 금리 모니터는 지금 주소로 */try{if(!/^\/rates(\/|$)/.test(location.pathname)){document.getElementById("sb-fx").href="https://fx-monitor.pages.dev/";document.getElementById("sb-rates").href=location.pathname;document.getElementById("sb-ask").href="https://fx-monitor.pages.dev/contact/"}}catch(e){}</script>
 <header class="topbar">
   <div class="topbar-inner">
@@ -742,7 +742,7 @@ const I18N = {
     fcN3: "전망은 각 기관의 의견이며 이 사이트의 투자 권유가 아닙니다. 발표 뒤 시장·경제 상황이 바뀌면 기관이 전망을 고칠 수 있습니다.",
     fcKoNote: "",
     nlMore: "다른 언론사·포털에서 더 보기", nlG1: "채권·금리 시황", nlG2: "포털 뉴스 검색 (최신순)", nlG3: "공식 발표·통계", nlG4: "리서치",
-    docTitle: "금리 모니터", brand: "금리 모니터", siteFx: "환율 조회", siteRates: "금리 모니터", siteCom: "커뮤니티", siteAsk: "문의", tabRates: "금리 추이", tabNews: "금리 뉴스", navAria: "페이지", langAria: "언어",
+    docTitle: "금리 모니터", brand: "금리 모니터", siteFx: "환율 조회", siteRates: "금리 모니터", siteCom: "커뮤니티", siteAsk: "문의·건의사항", tabRates: "금리 추이", tabNews: "금리 뉴스", navAria: "페이지", langAria: "언어",
     loading: "데이터 불러오는 중…", reload: "↻ 다시 불러오기", reloading: "불러오는 중…",
     reloadTitle: "GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.",
     h1Rates: "금리 추이",
@@ -809,7 +809,7 @@ const I18N = {
     fcN3: "Forecasts are the institutions' own views, not investment advice from this site. Institutions may revise them as markets and the economy change.",
     fcKoNote: "Rationale notes are shown in Korean, as reported in the source articles.",
     nlMore: "More from other publishers and portals", nlG1: "Bond & rate market", nlG2: "Portal news search (latest)", nlG3: "Official releases & statistics", nlG4: "Research",
-    docTitle: "Korea Rate Monitor", brand: "Korea Rate Monitor", siteFx: "KRW FX Monitor", siteRates: "Korea Rate Monitor", siteCom: "Community", siteAsk: "Contact", tabRates: "Korean Rates", tabNews: "Korean Rate News", navAria: "Pages", langAria: "Language",
+    docTitle: "Korea Rate Monitor", brand: "Korea Rate Monitor", siteFx: "KRW FX Monitor", siteRates: "Korea Rate Monitor", siteCom: "Community", siteAsk: "Contact & Feedback", tabRates: "Korean Rates", tabNews: "Korean Rate News", navAria: "Pages", langAria: "Language",
     loading: "Loading data…", reload: "↻ Reload", reloading: "Loading…",
     reloadTitle: "Re-reads the latest published data. No cost.",
     h1Rates: "Korean Interest Rates",
@@ -876,7 +876,7 @@ const I18N = {
     fcN3: "見通しは各機関の見解であり、当サイトによる投資勧誘ではありません。発表後の市場・経済の変化により見通しが修正されることがあります。",
     fcKoNote: "根拠の説明は出所記事の韓国語のまま表示しています。",
     nlMore: "他の報道機関・ポータルでもっと見る", nlG1: "債券・金利市況", nlG2: "ポータルのニュース検索（新着順）", nlG3: "公式発表・統計", nlG4: "リサーチ",
-    docTitle: "韓国金利モニター", brand: "韓国金利モニター", siteFx: "ウォン為替モニター", siteRates: "韓国金利モニター", siteCom: "コミュニティ", siteAsk: "お問い合わせ", tabRates: "韓国金利の推移", tabNews: "韓国金利ニュース", navAria: "ページ", langAria: "言語",
+    docTitle: "韓国金利モニター", brand: "韓国金利モニター", siteFx: "ウォン為替モニター", siteRates: "韓国金利モニター", siteCom: "コミュニティ", siteAsk: "お問い合わせ・ご意見", tabRates: "韓国金利の推移", tabNews: "韓国金利ニュース", navAria: "ページ", langAria: "言語",
     loading: "データを読み込み中…", reload: "↻ 再読み込み", reloading: "読み込み中…",
     reloadTitle: "公開済みの最新データを読み直します（費用はかかりません）。",
     h1Rates: "韓国の金利推移",
@@ -943,7 +943,7 @@ const I18N = {
     fcN3: "预测为各机构观点，并非本网站的投资建议。发布后市场和经济状况变化时，机构可能修正预测。",
     fcKoNote: "依据说明按来源文章的韩文原文显示。",
     nlMore: "在其他媒体和门户网站查看更多", nlG1: "债券·利率行情", nlG2: "门户新闻搜索（最新）", nlG3: "官方发布·统计", nlG4: "研究报告",
-    docTitle: "韩国利率监测", brand: "韩国利率监测", siteFx: "韩元汇率监测", siteRates: "韩国利率监测", siteCom: "社区", siteAsk: "联系我们", tabRates: "韩国利率走势", tabNews: "韩国利率新闻", navAria: "页面", langAria: "语言",
+    docTitle: "韩国利率监测", brand: "韩国利率监测", siteFx: "韩元汇率监测", siteRates: "韩国利率监测", siteCom: "社区", siteAsk: "咨询与建议", tabRates: "韩国利率走势", tabNews: "韩国利率新闻", navAria: "页面", langAria: "语言",
     loading: "正在加载数据…", reload: "↻ 重新加载", reloading: "加载中…",
     reloadTitle: "重新读取已发布的最新数据（不产生费用）。",
     h1Rates: "韩国利率走势",
