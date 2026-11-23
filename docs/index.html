@@ -522,7 +522,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
   <section class="page" id="page-rates" role="tabpanel" aria-labelledby="tab-rates">
     <div class="page-head">
       <h1 data-i18n="h1Rates">금리 추이</h1>
-      <p class="lede" data-i18n="ledeRates">한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.</p>
+      <p class="lede" data-i18n="ledeRates">한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다. 미국채는 미 재무부 고시 금리(미국 날짜 기준)입니다.</p>
     </div>
     <div class="brief" id="brief" hidden aria-live="polite">
       <div class="brief-h"><span class="brief-tag">오늘의 브리핑</span><b class="brief-t" id="briefT"></b><span class="brief-time" id="briefTime"></span></div>
@@ -579,7 +579,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 0 20px calc(32px + env(safe
 
     <div class="table-head">
       <h2 id="tbl-title">기간 데이터</h2>
-      <button type="button" class="btn" id="csv" data-i18n="csv">CSV 내려받기 (17개 계열 전체)</button>
+      <button type="button" class="btn" id="csv" data-i18n="csv">CSV 내려받기 (23개 계열 전체)</button>
     </div>
     <div class="table-scroll"><table id="tbl"></table></div>
     <p class="note" id="tbl-note"></p>
@@ -746,7 +746,7 @@ const I18N = {
     loading: "데이터 불러오는 중…", reload: "↻ 다시 불러오기", reloading: "불러오는 중…",
     reloadTitle: "GitHub에 올라간 최신 데이터를 다시 읽습니다. 비용이 들지 않습니다.",
     h1Rates: "금리 추이",
-    ledeRates: "한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다.",
+    ledeRates: "한국은행 ECOS 일별 시장금리(채권·CD는 금융투자협회 최종호가수익률)입니다. 기간을 짧게 잡으면 일별, 길게 잡으면 월평균이나 연평균으로 바꿔 보여줍니다. 미국채는 미 재무부 고시 금리(미국 날짜 기준)입니다.",
     period: "기간", periodAria: "기간 빠른 선택", p1M: "1개월", p3M: "3개월", p6M: "6개월", p1Y: "1년", p3Y: "3년", p5Y: "5년", p10Y: "10년", pALL: "전체",
     custom: "직접 지정", fromAria: "시작일", toAria: "종료일",
     unit: "단위", unitAria: "집계 단위", uAuto: "자동", uD: "일", uM: "월", uY: "연",
@@ -756,7 +756,7 @@ const I18N = {
     axisUnit: "연%", emptyNoSeries: "위에서 계열을 하나 이상 켜주세요.", emptyNoData: "선택한 기간에 자료가 없습니다.",
     tipNone: "이 시점에 켜진 계열 값이 없습니다.", noRange: "기간 내 자료 없음", chipDelta: "기간 {0}",
     keyM: "{0}년 {1}월 평균", keyMPartial: " ({0}일까지)", keyY: "{0}년 평균", keyYPartial: " ({0}/{1}까지)",
-    tblTitle: "기간 데이터 · {0}", csv: "CSV 내려받기 (17개 계열 전체)", colD: "날짜", colM: "월", colY: "연도",
+    tblTitle: "기간 데이터 · {0}", csv: "CSV 내려받기 (23개 계열 전체)", colD: "날짜", colM: "월", colY: "연도",
     noteMaxRows: "최근 {0}행만 표시했습니다. 전체는 CSV로 받으세요.", notePartial: "* 표시는 아직 끝나지 않은 기간의 평균({0}까지)입니다.",
     capDays: "영업일 {0}일", capPartial: "마지막 점(빈 원)은 {0}까지의 평균", capStep: "기준금리는 계단형",
     csvName: "금리", noRatesYet: "금리 자료가 아직 없습니다. 자동 수집이 처음 성공하면 여기에 그래프가 나옵니다.",
@@ -781,7 +781,7 @@ const I18N = {
     noSummary: "이 매체는 RSS로 요약을 제공하지 않습니다. 원문에서 확인하세요.", openOriginal: "원문 열기 ↗",
     toastMarkAll: "모든 기사를 읽음으로 표시했습니다.", toastNew: "새 기사 {0}건이 들어왔습니다.", toastLoaded: "새 기사 {0}건을 불러왔습니다.",
     toastFresh: "최신 데이터를 불러왔습니다.", toastAlready: "이미 최신입니다. {0}", toastFail: "불러오지 못했습니다. 잠시 후 다시 눌러주세요.",
-    footer1: "데이터: 한국은행 ECOS Open API 817Y002(시장금리 일별), 722Y001(기준금리) — 공공데이터. 뉴스: 연합뉴스 RSS(제목·링크만). GitHub Actions로 자동 수집.",
+    footer1: "데이터: 한국은행 ECOS Open API 817Y002(시장금리 일별), 722Y001(기준금리) — 공공데이터. 미국채: 미 재무부 Daily Treasury Par Yield Curve Rates(미국 날짜·뉴욕 마감), 미 기준금리: 미 연준 H.15(FRED). 뉴스: 연합뉴스 RSS(제목·링크만). GitHub Actions로 자동 수집.",
     footer2: "운영 통계를 위해 접속 기록(IP, 접속 시각, 지역, 기기 정보)을 90일간 보관한 뒤 자동 삭제합니다.",
   },
   en: {
@@ -813,7 +813,7 @@ const I18N = {
     loading: "Loading data…", reload: "↻ Reload", reloading: "Loading…",
     reloadTitle: "Re-reads the latest published data. No cost.",
     h1Rates: "Korean Interest Rates",
-    ledeRates: "Daily Korean market rates from the Bank of Korea (ECOS). Bond and CD yields are KOFIA closing quotes. Short ranges show daily values; longer ranges switch to monthly or yearly averages.",
+    ledeRates: "Daily Korean market rates from the Bank of Korea (ECOS). Bond and CD yields are KOFIA closing quotes. Short ranges show daily values; longer ranges switch to monthly or yearly averages. US Treasury yields are U.S. Treasury par yields (US dates).",
     period: "Period", periodAria: "Quick period", p1M: "1M", p3M: "3M", p6M: "6M", p1Y: "1Y", p3Y: "3Y", p5Y: "5Y", p10Y: "10Y", pALL: "All",
     custom: "Custom range", fromAria: "Start date", toAria: "End date",
     unit: "Interval", unitAria: "Aggregation", uAuto: "Auto", uD: "Daily", uM: "Monthly", uY: "Yearly",
@@ -823,7 +823,7 @@ const I18N = {
     axisUnit: "% p.a.", emptyNoSeries: "Turn on at least one series above.", emptyNoData: "No data for the selected range.",
     tipNone: "No values for the selected series at this point.", noRange: "No data in range", chipDelta: "{0} in range",
     keyM: "{1}/{0} avg.", keyMPartial: " (through day {0})", keyY: "{0} avg.", keyYPartial: " (through {0}/{1})",
-    tblTitle: "Data · {0}", csv: "Download CSV (all 17 series)", colD: "Date", colM: "Month", colY: "Year",
+    tblTitle: "Data · {0}", csv: "Download CSV (all 23 series)", colD: "Date", colM: "Month", colY: "Year",
     noteMaxRows: "Showing the latest {0} rows. Download the CSV for everything.", notePartial: "* Period still in progress: average through {0}.",
     capDays: "{0} business days", capPartial: "last point (hollow) averages through {0}", capStep: "BOK base rate drawn as steps",
     csvName: "korea-rates", noRatesYet: "Rate data isn't available yet. The chart appears after the first successful collection.",
@@ -848,7 +848,7 @@ const I18N = {
     noSummary: "This publisher's RSS feed has no summary. Open the original to read it.", openOriginal: "Open original ↗",
     toastMarkAll: "Marked all articles as read.", toastNew: "{0} new articles arrived.", toastLoaded: "Loaded {0} new articles.",
     toastFresh: "Loaded the latest data.", toastAlready: "Already up to date. {0}", toastFail: "Couldn't load. Please try again shortly.",
-    footer1: "Data: Bank of Korea ECOS Open API 817Y002 (daily Korean market rates), 722Y001 (BOK base rate) — public data. News: Yonhap News RSS (headlines and links only). Collected automatically with GitHub Actions.",
+    footer1: "Data: Bank of Korea ECOS Open API 817Y002 (daily Korean market rates), 722Y001 (BOK base rate) — public data. US Treasuries: U.S. Treasury Daily Par Yield Curve Rates (US dates, NY close); Fed funds: Federal Reserve H.15 (FRED). News: Yonhap News RSS (headlines and links only). Collected automatically with GitHub Actions.",
     footer2: "Access logs (IP, time, region, device) are kept for 90 days for operating statistics, then deleted automatically.",
   },
   ja: {
@@ -880,7 +880,7 @@ const I18N = {
     loading: "データを読み込み中…", reload: "↻ 再読み込み", reloading: "読み込み中…",
     reloadTitle: "公開済みの最新データを読み直します（費用はかかりません）。",
     h1Rates: "韓国の金利推移",
-    ledeRates: "韓国銀行（ECOS）の日次市場金利です。債券・CDは韓国金融投資協会（KOFIA）の最終呼値利回り。期間が短いと日次、長いと月平均・年平均で表示します。",
+    ledeRates: "韓国銀行（ECOS）の日次市場金利です。債券・CDは韓国金融投資協会（KOFIA）の最終呼値利回り。期間が短いと日次、長いと月平均・年平均で表示します。米国債は米財務省の公表利回り（米国日付）です。",
     period: "期間", periodAria: "期間の選択", p1M: "1か月", p3M: "3か月", p6M: "6か月", p1Y: "1年", p3Y: "3年", p5Y: "5年", p10Y: "10年", pALL: "全期間",
     custom: "期間指定", fromAria: "開始日", toAria: "終了日",
     unit: "単位", unitAria: "集計単位", uAuto: "自動", uD: "日", uM: "月", uY: "年",
@@ -890,7 +890,7 @@ const I18N = {
     axisUnit: "年%", emptyNoSeries: "上で系列を1つ以上オンにしてください。", emptyNoData: "選択した期間のデータがありません。",
     tipNone: "この時点の値がありません。", noRange: "期間内データなし", chipDelta: "期間 {0}",
     keyM: "{0}年{1}月平均", keyMPartial: "（{0}日まで）", keyY: "{0}年平均", keyYPartial: "（{0}/{1}まで）",
-    tblTitle: "データ · {0}", csv: "CSVダウンロード（全17系列）", colD: "日付", colM: "月", colY: "年",
+    tblTitle: "データ · {0}", csv: "CSVダウンロード（全23系列）", colD: "日付", colM: "月", colY: "年",
     noteMaxRows: "直近{0}行のみ表示しています。全件はCSVでダウンロードしてください。", notePartial: "* は期間途中の平均です（{0}まで）。",
     capDays: "営業日 {0}日", capPartial: "最後の点（白丸）は{0}までの平均", capStep: "基準金利は階段状",
     csvName: "korea-rates", noRatesYet: "金利データがまだありません。初回の自動収集が成功すると表示されます。",
@@ -915,7 +915,7 @@ const I18N = {
     noSummary: "この媒体はRSSで要約を提供していません。原文をご覧ください。", openOriginal: "原文を開く ↗",
     toastMarkAll: "すべての記事を既読にしました。", toastNew: "新着記事が{0}件あります。", toastLoaded: "新着記事{0}件を読み込みました。",
     toastFresh: "最新データを読み込みました。", toastAlready: "すでに最新です。{0}", toastFail: "読み込めませんでした。しばらくしてから再度お試しください。",
-    footer1: "データ：韓国銀行 ECOS Open API 817Y002（韓国市場金利・日次）、722Y001（韓国銀行 基準金利）— 公共データ。ニュース：聯合ニュースRSS（見出しとリンクのみ）。GitHub Actionsで自動収集。",
+    footer1: "データ：韓国銀行 ECOS Open API 817Y002（韓国市場金利・日次）、722Y001（韓国銀行 基準金利）— 公共データ。米国債：米財務省 Daily Treasury Par Yield Curve Rates（米国日付・NY終値）、米政策金利：米FRB H.15（FRED）。ニュース：聯合ニュースRSS（見出しとリンクのみ）。GitHub Actionsで自動収集。",
     footer2: "運営統計のため、アクセス記録（IP・時刻・地域・端末情報）を90日間保管した後、自動で削除します。",
   },
   zh: {
@@ -947,7 +947,7 @@ const I18N = {
     loading: "正在加载数据…", reload: "↻ 重新加载", reloading: "加载中…",
     reloadTitle: "重新读取已发布的最新数据（不产生费用）。",
     h1Rates: "韩国利率走势",
-    ledeRates: "韩国银行（ECOS）每日市场利率。债券与CD为韩国金融投资协会（KOFIA）收盘报价收益率。区间较短时显示日数据，较长时改为月均或年均。",
+    ledeRates: "韩国银行（ECOS）每日市场利率。债券与CD为韩国金融投资协会（KOFIA）收盘报价收益率。区间较短时显示日数据，较长时改为月均或年均。美国国债为美国财政部公布的收益率（美国日期）。",
     period: "期间", periodAria: "快速选择期间", p1M: "1个月", p3M: "3个月", p6M: "6个月", p1Y: "1年", p3Y: "3年", p5Y: "5年", p10Y: "10年", pALL: "全部",
     custom: "自定义", fromAria: "开始日期", toAria: "结束日期",
     unit: "频率", unitAria: "汇总频率", uAuto: "自动", uD: "日", uM: "月", uY: "年",
@@ -957,7 +957,7 @@ const I18N = {
     axisUnit: "年%", emptyNoSeries: "请在上方至少开启一个系列。", emptyNoData: "所选期间无数据。",
     tipNone: "该时点没有已开启系列的数值。", noRange: "区间内无数据", chipDelta: "区间 {0}",
     keyM: "{0}年{1}月均值", keyMPartial: "（截至{0}日）", keyY: "{0}年均值", keyYPartial: "（截至{0}/{1}）",
-    tblTitle: "数据 · {0}", csv: "下载CSV（全部17个系列）", colD: "日期", colM: "月份", colY: "年份",
+    tblTitle: "数据 · {0}", csv: "下载CSV（全部23个系列）", colD: "日期", colM: "月份", colY: "年份",
     noteMaxRows: "仅显示最近{0}行，完整数据请下载CSV。", notePartial: "* 表示期间尚未结束，为截至{0}的平均值。",
     capDays: "交易日 {0}天", capPartial: "最后一点（空心圆）为截至{0}的平均", capStep: "基准利率以阶梯显示",
     csvName: "korea-rates", noRatesYet: "暂无利率数据，首次自动收集成功后将显示图表。",
@@ -982,7 +982,7 @@ const I18N = {
     noSummary: "该媒体的RSS不提供摘要，请查看原文。", openOriginal: "打开原文 ↗",
     toastMarkAll: "已将所有文章标为已读。", toastNew: "新增{0}篇文章。", toastLoaded: "已加载{0}篇新文章。",
     toastFresh: "已加载最新数据。", toastAlready: "已是最新。{0}", toastFail: "加载失败，请稍后重试。",
-    footer1: "数据：韩国银行 ECOS Open API 817Y002（韩国市场利率·日度）、722Y001（韩国银行基准利率）— 公共数据。新闻：韩联社RSS（仅标题和链接）。通过GitHub Actions自动收集。",
+    footer1: "数据：韩国银行 ECOS Open API 817Y002（韩国市场利率·日度）、722Y001（韩国银行基准利率）— 公共数据。美国国债：美国财政部 Daily Treasury Par Yield Curve Rates（美国日期·纽约收盘），美联储利率：美联储H.15（FRED）。新闻：韩联社RSS（仅标题和链接）。通过GitHub Actions自动收集。",
     footer2: "为运营统计，访问记录（IP、访问时间、地区、设备信息）保存90天后自动删除。",
   },
 };
@@ -991,6 +991,7 @@ const GROUP_NAME = {
   policy: { ko: "정책·단기", en: "Korea policy & short-term", ja: "韓国 政策・短期", zh: "韩国 政策与短期" },
   ktb: { ko: "국고채", en: "Korea Treasury Bonds (KTB)", ja: "韓国国債", zh: "韩国国债" },
   credit: { ko: "크레딧", en: "Korea credit", ja: "韓国クレジット", zh: "韩国信用债" },
+  us: { ko: "미국", en: "United States", ja: "米国", zh: "美国" },
 };
 // 뉴스 분류(데이터에는 한국어 값이 저장돼 있고, 화면에서만 바꿔 보여준다)
 const CAT_NAME = {
@@ -1126,6 +1127,13 @@ const SERIES = [
   { k: "aa3", g: "credit", n: { ko: "회사채 AA- 3년", en: "Korea Corp. AA- 3Y", ja: "韓国社債 AA- 3年", zh: "韩国公司债 AA- 3年" } },
   { k: "aa3m", g: "credit", n: { ko: "AA- 3년 민평", en: "Korea Corp. AA- 3Y (pricing avg.)", ja: "韓国社債 AA- 3年(民評)", zh: "韩国公司债 AA- 3年(民评)" } },
   { k: "bbb3", g: "credit", n: { ko: "회사채 BBB- 3년", en: "Korea Corp. BBB- 3Y", ja: "韓国社債 BBB- 3年", zh: "韩国公司债 BBB- 3年" } },
+  // 미국: 미 재무부 일별 국채 수익률(data/ust.csv, 미국 날짜) + 연방기금 목표범위 상단(data/us.csv, FRED·H.15)
+  { k: "fedhi", g: "us", n: { ko: "미 기준금리(상단)", en: "Fed Funds Target (upper)", ja: "米政策金利(上限)", zh: "美联储利率(上限)" } },
+  { k: "ust3m", g: "us", n: { ko: "미국채 3개월", en: "US Treasury 3M", ja: "米国債 3カ月", zh: "美国国债 3个月" } },
+  { k: "ust2", g: "us", n: { ko: "미국채 2년", en: "US Treasury 2Y", ja: "米国債 2年", zh: "美国国债 2年" } },
+  { k: "ust5", g: "us", n: { ko: "미국채 5년", en: "US Treasury 5Y", ja: "米国債 5年", zh: "美国国债 5年" } },
+  { k: "ust10", g: "us", n: { ko: "미국채 10년", en: "US Treasury 10Y", ja: "米国債 10年", zh: "美国国债 10年" } },
+  { k: "ust30", g: "us", n: { ko: "미국채 30년", en: "US Treasury 30Y", ja: "米国債 30年", zh: "美国国债 30年" } },
 ];
 const BY_KEY = Object.fromEntries(SERIES.map(s => [s.k, s]));
 const sname = s => s.n[LANG] || s.n.ko;
@@ -1394,11 +1402,14 @@ function drawChart(V) {
   const solidEnd = V.partialLast && n > 1 ? lastIdx - 1 : lastIdx;
   for (const s of active) {
     const vs = V.vals[s.k];
-    const step = s.k === "base" && V.unit === "D"; // 기준금리는 계단형
-    let dStr = "", pen = false, px = 0, py = 0;
+    const step = (s.k === "base" || s.k === "fedhi") && V.unit === "D"; // 기준금리는 계단형
+    let dStr = "", pen = false, px = 0, py = 0, li = -99;
+    const bridge = V.unit === "D" ? 7 : 1;
     for (let i = 0; i <= solidEnd; i++) {
       const v = vs[i];
-      if (Number.isNaN(v)) { pen = false; continue; }
+      if (Number.isNaN(v)) continue;
+      if (i - li > bridge) pen = false;
+      li = i;
       const X = x(i), Y = y(v);
       if (!pen) dStr += `M${X.toFixed(1)},${Y.toFixed(1)}`;
       else if (step) dStr += `L${X.toFixed(1)},${py.toFixed(1)}L${X.toFixed(1)},${Y.toFixed(1)}`;
@@ -1599,8 +1610,20 @@ if ("ResizeObserver" in window) {
 // 글꼴(Pretendard)이 늦게 도착하면 라벨 폭을 다시 재서 그린다
 if (document.fonts && document.fonts.addEventListener) { let ft = 0; document.fonts.addEventListener("loadingdone", () => { clearTimeout(ft); ft = setTimeout(() => { try { renderRates(); renderFc(); } catch (e) {} }, 150); }); }
 
+function mergeCSV(A, B, only) {   // only: B 의 날짜는 새로 만들지 않고 A 에 있는 날짜에만 얹는다
+  const dates = only ? A.dates : [...new Set([...A.dates, ...B.dates])].sort();
+  const n = dates.length, ia = new Map(A.dates.map((d, i) => [d, i])), ib = new Map(B.dates.map((d, i) => [d, i]));
+  const cols = {};
+  for (const [k, c] of Object.entries(A.cols)) { const o = new Float64Array(n).fill(NaN); dates.forEach((d, j) => { const i = ia.get(d); if (i !== undefined) o[j] = c[i]; }); cols[k] = o; }
+  for (const [k, c] of Object.entries(B.cols)) { const o = new Float64Array(n).fill(NaN); dates.forEach((d, j) => { const i = ib.get(d); if (i !== undefined) o[j] = c[i]; }); cols[k] = o; }
+  return { dates, cols };
+}
 async function loadRates() {
-  D = parseCSV(await getText("data/rates.csv"));
+  const [rt, ut, us] = await Promise.all([getText("data/rates.csv"), getText("data/ust.csv").catch(() => null), getText("data/us.csv").catch(() => null)]);
+  D = parseCSV(rt);
+  if (ut) { try { D = mergeCSV(D, parseCSV(ut)); } catch (e) {} }
+  if (us) { try { const U = parseCSV(us); D = mergeCSV(D, { dates: U.dates, cols: { fedhi: U.cols.fed_hi } }, true); } catch (e) {} }
+  for (const s of SERIES) if (!D.cols[s.k]) D.cols[s.k] = new Float64Array(D.dates.length).fill(NaN);
   const minD = iso(D.dates[0]), maxD = iso(D.dates[D.dates.length - 1]);
   for (const id of ["d-from", "d-to"]) { $(id).min = minD; $(id).max = maxD; }
   // 직접 지정한 기간은 자동 새로고침 때 유지하고, 빠른 선택은 새 마지막 날짜 기준으로 다시 잡는다.
