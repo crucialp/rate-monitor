@@ -1,7 +1,7 @@
 {
- "news_updated": "2026-11-26T09:06+09:00",
- "news_count": 78,
- "rates_updated": "2026-11-26T09:06+09:00",
+ "news_updated": "2026-11-26T10:06+09:00",
+ "news_count": 82,
+ "rates_updated": "2026-11-26T10:06+09:00",
  "rates_last_date": "20261125",
  "series": {
   "base": "기준금리",
@@ -22,5 +22,5 @@
   "aa3m": "회사채(3년, AA-, 민평)",
   "bbb3": "회사채(3년, BBB-)"
  },
- "base_last": 3.0
+ "base_last": 3.25
 }
